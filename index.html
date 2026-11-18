@@ -2,109 +2,120 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#202833">
-<title>Classroom Board</title>
+<meta name="theme-color" content="#ffffff">
+<title>Promethean-style Whiteboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
 <style>
-:root{--nav:#202833;--nav2:#2d3947;--orange:#f28a22;--paper:#fff;--ink:#202833;--muted:#77818d;--line:#dce1e6}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Inter,Arial,sans-serif;color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer}
-.app{height:100dvh;display:flex;flex-direction:column;background:#e9edf1}
-.topbar{height:56px;flex:none;background:var(--nav);color:white;display:flex;align-items:center;padding:0 14px;gap:12px;box-shadow:0 2px 8px #0002;z-index:5}
-.logo{width:34px;height:34px;border-radius:8px;background:var(--orange);display:grid;place-items:center;color:white}.logo .material-symbols-rounded{font-size:23px}.brand{font-size:15px;font-weight:800;white-space:nowrap}.lesson-title{margin-left:12px;width:min(240px,25vw);background:var(--nav2);border:1px solid #536171;border-radius:6px;color:white;padding:8px 10px;outline:none}.top-spacer{flex:1}.top-action{border:1px solid #536171;border-radius:7px;background:var(--nav2);color:white;padding:7px 10px;font-size:12px;display:flex;align-items:center;gap:5px}.top-action:hover{background:#435365}.top-action.primary{background:var(--orange);border-color:var(--orange)}.top-action:disabled{opacity:.35;cursor:default}
-.main{flex:1;min-height:0;display:flex}
-.pages{width:154px;flex:none;background:#f8f9fa;border-right:1px solid #d5dbe1;display:flex;flex-direction:column;padding:12px 10px;gap:9px;overflow:auto}
-.pages-head{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:800;color:#66717e;letter-spacing:.06em;padding:2px 3px 6px}.small-btn{width:27px;height:27px;border:1px solid var(--line);border-radius:6px;background:white;color:#45505d;display:grid;place-items:center}.page-list{display:flex;flex-direction:column;gap:9px}.page-thumb{border:2px solid transparent;background:white;border-radius:7px;padding:5px;text-align:left;box-shadow:0 1px 4px #20283312;color:#606b78}.page-thumb.active{border-color:var(--orange);box-shadow:0 0 0 1px #f28a2240}.page-thumb canvas{width:100%;aspect-ratio:16/10;display:block;border:1px solid #e4e7eb;background:white}.page-caption{font-size:10px;font-weight:700;padding:5px 2px 1px;display:flex;justify-content:space-between}
-.stage{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
-.stagebar{height:43px;flex:none;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:10px;color:#65707d;font-size:11px}.stagebar strong{color:#313b47}.stagebar .spacer{flex:1}.zoom-btn{border:1px solid var(--line);background:#fff;border-radius:5px;padding:5px 8px;color:#53606d}
-.board-area{flex:1;min-height:0;display:grid;place-items:center;padding:22px;overflow:auto;background-color:#e8ecf0;background-image:radial-gradient(#cbd2da 0.8px,transparent .8px);background-size:17px 17px}
-.paper-wrap{position:relative;width:min(100%,1100px);height:min(100%,calc(100vh - 150px));min-height:240px;aspect-ratio:16/9;background:white;box-shadow:0 5px 22px #26344525;border:1px solid #d5dbe1}
-#board{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
-.tools{width:76px;flex:none;background:#f9fafb;border-left:1px solid #d5dbe1;display:flex;flex-direction:column;align-items:center;padding:10px 7px;gap:5px;overflow:auto}
-.tool{width:60px;min-height:58px;border:1px solid transparent;border-radius:8px;background:transparent;color:#53606d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:700}.tool .material-symbols-rounded{font-size:23px}.tool:hover{background:#fff2e6}.tool.active{background:#ffead8;border-color:#f2bd88;color:#a95408}.tool-sep{height:1px;width:42px;background:#e0e4e8;margin:5px 0}
-.properties{width:208px;flex:none;background:#f8f9fa;border-left:1px solid #d5dbe1;padding:13px 12px;overflow:auto}.prop-title{font-size:11px;font-weight:800;letter-spacing:.05em;color:#697482;margin:2px 0 12px}.prop-label{font-size:11px;font-weight:700;color:#586371;display:block;margin:12px 0 7px}.pen-select{width:100%;padding:9px;border:1px solid #d5dce3;border-radius:6px;background:white;color:#303a46;font-size:12px}.swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.swatch{height:27px;width:27px;border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px #c6cdd5}.swatch.active{box-shadow:0 0 0 2px var(--orange)}.size-row{display:flex;align-items:center;gap:8px}.size-row input{width:100%;accent-color:var(--orange)}.size-value{font-size:11px;font-weight:700;min-width:18px}.hint{font-size:10px;line-height:1.5;color:#8a939e;margin-top:15px}
-.bottom{height:34px;flex:none;background:var(--nav);color:#cbd1d8;display:flex;align-items:center;justify-content:space-between;padding:0 13px;font-size:10px}.bottom button{background:transparent;border:0;color:white;font-size:10px;padding:5px 8px}.bottom button:hover{color:#ffb66b}
-.ruler{position:absolute;z-index:2;display:none;left:18%;top:24%;width:300px;height:43px;background:#ffffffdc;border:1px solid #9ba6b2;border-radius:3px;box-shadow:0 2px 8px #0002;touch-action:none;cursor:grab}.ruler.show{display:block}.ruler:before{content:"";position:absolute;left:8px;right:8px;top:0;height:20px;background:repeating-linear-gradient(90deg,#687482 0 1px,transparent 1px 10px);border-bottom:1px solid #aab2bc}.ruler:after{content:"0     1     2     3     4     5     6     7     8     9";position:absolute;left:9px;bottom:3px;font-size:8px;color:#46515e;letter-spacing:2px}
-@media(max-width:850px){.properties{width:175px}.pages{width:115px}.paper-wrap{height:min(100%,calc(100vh - 145px))}}
-@media(max-width:620px){.topbar{height:50px;padding:0 7px;gap:6px}.brand{font-size:12px}.lesson-title{display:none}.top-action{padding:7px;font-size:10px}.pages{width:75px;padding:8px 5px}.pages-head{font-size:9px}.properties{width:145px;padding:9px 8px}.tools{width:59px;padding:7px 3px}.tool{width:51px;min-height:51px;font-size:8px}.tool .material-symbols-rounded{font-size:21px}.board-area{padding:8px}.paper-wrap{height:auto;aspect-ratio:4/3;min-height:180px}.stagebar{height:35px;padding:0 7px}.bottom{height:30px}}
-@media(max-width:430px){.properties{width:120px}.swatches{gap:5px}.swatch{width:23px;height:23px}.pages{width:62px}.page-caption{font-size:8px}.top-action .word{display:none}}
+:root{--purple:#7043bd;--purple-light:#f0eaff;--ink:#33343a;--line:#e4e4e9;--panel:#fff;--shadow:0 3px 16px #20202b20}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Inter,Arial,sans-serif;color:var(--ink);background:#fff}button,input,select{font:inherit}button{cursor:pointer}
+#app{height:100dvh;width:100vw;position:relative;background:#fff;overflow:hidden}
+#board{position:absolute;inset:0;width:100%;height:100%;touch-action:none;background:#fff;cursor:crosshair}
+.top{position:absolute;z-index:5;top:12px;left:14px;right:14px;display:flex;align-items:center;gap:8px;pointer-events:none}
+.top>*{pointer-events:auto}.topgroup{display:flex;align-items:center;gap:5px;background:#fff;border:1px solid #e9e7ed;border-radius:12px;padding:5px;box-shadow:var(--shadow)}
+.top button,.round{border:0;background:#fff;color:#55515f;border-radius:8px;width:36px;height:36px;display:grid;place-items:center}.top button:hover,.round:hover{background:#f3f0f8;color:var(--purple)}.top .labelbtn{width:auto;padding:0 11px;display:flex;gap:7px;font-size:12px;font-weight:600}
+.projectname{border:0;outline:0;width:190px;padding:8px 10px;font-size:13px;font-weight:600;color:#45414e;background:transparent}
+.push{flex:1}
+.floatbar{position:absolute;z-index:7;left:16px;top:90px;width:58px;padding:7px 6px;background:#fff;border:1px solid #e9e7ed;border-radius:15px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:none}
+.grip{height:18px;width:100%;display:grid;place-items:center;color:#aaa;cursor:grab}.grip .material-symbols-rounded{font-size:18px}
+.tool{width:44px;height:44px;border:0;border-radius:10px;background:#fff;color:#56525f;display:grid;place-items:center;position:relative}.tool .material-symbols-rounded{font-size:23px}.tool:hover{background:#f7f4fb}.tool.active{background:var(--purple-light);color:var(--purple);box-shadow:inset 0 0 0 1px #d9c9f4}
+.sep{height:1px;width:34px;background:#eceaf0;margin:3px 0}
+.bottomleft{position:absolute;z-index:5;left:15px;bottom:14px;display:flex;gap:6px;align-items:center}
+.bottomright{position:absolute;z-index:5;right:15px;bottom:14px;display:flex;gap:7px;align-items:center}
+.pill{height:39px;padding:0 10px;background:#fff;border:1px solid #e9e7ed;border-radius:11px;box-shadow:var(--shadow);display:flex;align-items:center;gap:6px}
+.pill button{border:0;background:transparent;width:28px;height:28px;border-radius:7px;color:#5b5664;display:grid;place-items:center}.pill button:hover{background:#f2eef8;color:var(--purple)}
+.zoomread{font-size:11px;color:#77717e;min-width:38px;text-align:center}
+.slidecount{font-size:11px;color:#6c6674;padding:0 5px;white-space:nowrap}
+.panel{position:absolute;z-index:10;background:#fff;border:1px solid #e8e5ed;border-radius:13px;box-shadow:0 8px 28px #17132125;padding:13px;display:none;min-width:220px}.panel.open{display:block}
+.panel h3{font-size:12px;margin:0 0 12px;font-weight:700;color:#494452}.panel label{font-size:11px;color:#6d6875;display:block;margin:10px 0 6px}.panel select{width:100%;height:34px;border:1px solid #e1dde8;border-radius:7px;padding:0 8px;background:#fff;font-size:12px}
+.colors{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.color{height:25px;width:25px;border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px #d3d0d9}.color.selected{box-shadow:0 0 0 2px var(--purple)}
+.range{display:flex;gap:8px;align-items:center}.range input{width:100%;accent-color:var(--purple)}.range span{font-size:11px;min-width:20px}
+#penPanel{left:82px;top:238px}#settingsPanel{right:16px;top:62px}#menuPanel{left:14px;top:62px;min-width:190px}#slidesPanel{right:15px;bottom:64px;width:260px;max-height:55vh;overflow:auto}
+.menuitem{width:100%;border:0;background:white;text-align:left;padding:9px 8px;border-radius:7px;font-size:12px;color:#4c4754;display:flex;gap:9px;align-items:center}.menuitem:hover{background:#f4f0fa}
+.slidegrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.slide{border:2px solid #e9e6ed;background:#fff;border-radius:8px;padding:4px;text-align:left}.slide.active{border-color:var(--purple)}.slide canvas{width:100%;aspect-ratio:16/9;display:block;background:#fff;border:1px solid #eee}.slide span{font-size:10px;display:block;padding:4px 2px;color:#666}
+#ruler{position:absolute;z-index:6;display:none;left:30%;top:30%;width:340px;height:48px;border:1px solid #9b93a8;border-radius:4px;background:#fffffff0;box-shadow:0 2px 8px #0002;touch-action:none;cursor:grab}
+#ruler.visible{display:block}#ruler:before{content:"";position:absolute;left:8px;right:8px;top:0;height:23px;background:repeating-linear-gradient(90deg,#716a7b 0 1px,transparent 1px 10px);border-bottom:1px solid #b5afbd}#ruler:after{content:"0   1   2   3   4   5   6   7   8   9";position:absolute;left:10px;bottom:3px;font-size:9px;letter-spacing:2px;color:#5b5563}
+#toast{position:absolute;z-index:20;left:50%;bottom:70px;transform:translateX(-50%);background:#29252f;color:white;padding:9px 14px;border-radius:8px;font-size:11px;opacity:0;transition:opacity .2s;pointer-events:none}#toast.show{opacity:1}
+@media(max-width:600px){.top{top:6px;left:6px;right:6px;gap:4px}.topgroup{padding:3px}.top button,.round{width:32px;height:32px}.projectname{width:115px;font-size:11px}.floatbar{left:7px;top:60px;width:49px;padding:5px 3px}.tool{width:39px;height:40px}.tool .material-symbols-rounded{font-size:21px}.bottomleft{left:6px;bottom:7px}.bottomright{right:6px;bottom:7px}.pill{height:35px;padding:0 5px}.slidecount{display:none}#settingsPanel{right:6px;top:52px}#menuPanel{left:6px;top:52px}#penPanel{left:62px;top:195px}}
 </style>
 </head>
 <body>
-<div class="app">
-<header class="topbar">
- <div class="logo"><span class="material-symbols-rounded">edit</span></div><div class="brand">Classroom Board</div>
- <input id="lessonTitle" class="lesson-title" value="Untitled lesson" aria-label="Lesson title">
- <div class="top-spacer"></div>
- <button class="top-action" id="undoBtn" title="Undo"><span class="material-symbols-rounded">undo</span><span class="word">Undo</span></button>
- <button class="top-action" id="redoBtn" title="Redo"><span class="material-symbols-rounded">redo</span><span class="word">Redo</span></button>
- <button class="top-action" id="clearBtn"><span class="material-symbols-rounded">delete</span><span class="word">Clear</span></button>
- <button class="top-action primary" id="fullBtn"><span class="material-symbols-rounded">fullscreen</span><span class="word">Fullscreen</span></button>
-</header>
-<div class="main">
-<aside class="pages"><div class="pages-head">PAGES <button class="small-btn" id="addPage" title="Add page"><span class="material-symbols-rounded">add</span></button></div><div class="page-list" id="pageList"></div></aside>
-<section class="stage">
- <div class="stagebar"><strong id="pageHeading">Page 1</strong><span>·</span><span>Flipchart</span><span class="spacer"></span><button class="zoom-btn" id="fitBtn">Fit page</button></div>
- <div class="board-area"><div class="paper-wrap"><canvas id="board"></canvas><div class="ruler" id="ruler" title="Drag ruler"></div></div></div>
-</section>
-<nav class="tools" aria-label="Board tools">
- <button class="tool active" data-tool="pen"><span class="material-symbols-rounded">stylus</span>Pen</button>
- <button class="tool" data-tool="highlighter"><span class="material-symbols-rounded">ink_highlighter</span>Highlighter</button>
- <button class="tool" data-tool="eraser"><span class="material-symbols-rounded">ink_eraser</span>Eraser</button>
- <button class="tool" data-tool="laser"><span class="material-symbols-rounded">near_me</span>Laser</button>
- <div class="tool-sep"></div>
- <button class="tool" data-tool="ruler"><span class="material-symbols-rounded">straighten</span>Ruler</button>
-</nav>
-<aside class="properties">
- <div class="prop-title">PEN CHANGER</div>
- <label class="prop-label" for="penType">Pen style</label>
- <select class="pen-select" id="penType"><option value="ballpoint">Ballpoint</option><option value="fine">Fine liner</option><option value="marker">Marker</option><option value="pencil">Pencil</option><option value="calligraphy">Calligraphy</option></select>
- <div class="prop-label">Ink colour</div><div class="swatches" id="swatches">
- <button class="swatch active" data-color="#202833" style="background:#202833" aria-label="Black"></button><button class="swatch" data-color="#d93636" style="background:#d93636" aria-label="Red"></button><button class="swatch" data-color="#1769c2" style="background:#1769c2" aria-label="Blue"></button><button class="swatch" data-color="#159447" style="background:#159447" aria-label="Green"></button><button class="swatch" data-color="#f0bd22" style="background:#f0bd22" aria-label="Yellow"></button><button class="swatch" data-color="#ef7b18" style="background:#ef7b18" aria-label="Orange"></button><button class="swatch" data-color="#884bc1" style="background:#884bc1" aria-label="Purple"></button><button class="swatch" data-color="#ffffff" style="background:#fff" aria-label="White"></button>
- </div>
- <label class="prop-label" for="penSize">Thickness</label><div class="size-row"><input id="penSize" type="range" min="1" max="30" value="5"><span class="size-value" id="sizeValue">5</span></div>
- <p class="hint">Choose a tool, then write directly on the board. Your lesson saves automatically on this device.</p>
-</aside>
+<div id="app">
+<canvas id="board"></canvas>
+<div class="top">
+ <div class="topgroup"><button id="menuBtn" title="Projects and menu"><span class="material-symbols-rounded">grid_view</span></button><input class="projectname" id="projectName" value="Untitled project" aria-label="Project name"></div>
+ <div class="push"></div>
+ <div class="topgroup"><button id="undo" title="Undo"><span class="material-symbols-rounded">undo</span></button><button id="redo" title="Redo"><span class="material-symbols-rounded">redo</span></button></div>
+ <div class="topgroup"><button class="labelbtn" id="exportBtn"><span class="material-symbols-rounded">ios_share</span>Export</button><button id="settingsBtn" title="Settings"><span class="material-symbols-rounded">settings</span></button></div>
 </div>
-<footer class="bottom"><span id="saveStatus">Ready</span><span><button id="saveBtn">Save lesson</button><button id="exportBtn">Export page as PNG</button></span></footer>
+<div class="floatbar" id="floatbar">
+ <div class="grip" id="grip" title="Drag toolbar"><span class="material-symbols-rounded">drag_indicator</span></div>
+ <button class="tool" data-tool="pan" title="Pan"><span class="material-symbols-rounded">pan_tool</span></button>
+ <button class="tool active" data-tool="pen" title="Draw"><span class="material-symbols-rounded">edit</span></button>
+ <button class="tool" data-tool="highlighter" title="Highlighter"><span class="material-symbols-rounded">ink_highlighter</span></button>
+ <button class="tool" data-tool="eraser" title="Eraser"><span class="material-symbols-rounded">ink_eraser</span></button>
+ <button class="tool" data-tool="laser" title="Laser pointer"><span class="material-symbols-rounded">near_me</span></button>
+ <button class="tool" id="penOptions" title="Pen settings"><span class="material-symbols-rounded">tune</span></button>
+ <div class="sep"></div>
+ <button class="tool" id="rulerBtn" title="Ruler"><span class="material-symbols-rounded">straighten</span></button>
+ <div class="sep"></div>
+ <button class="tool" id="clearBtn" title="Clear board"><span class="material-symbols-rounded">delete_sweep</span></button>
+</div>
+<div class="bottomleft"><div class="pill"><button id="zoomOut" title="Zoom out"><span class="material-symbols-rounded">remove</span></button><span class="zoomread" id="zoomRead">100%</span><button id="zoomIn" title="Zoom in"><span class="material-symbols-rounded">add</span></button><button id="resetView" title="Reset view"><span class="material-symbols-rounded">center_focus_strong</span></button></div></div>
+<div class="bottomright"><span class="slidecount" id="slideCount">Slide 1 of 1</span><div class="pill"><button id="addSlide" title="New slide"><span class="material-symbols-rounded">add</span></button><button id="slideSorterBtn" title="Slide sorter"><span class="material-symbols-rounded">view_carousel</span></button></div></div>
+<div id="ruler"></div>
+<div class="panel" id="menuPanel"><h3>PROJECT</h3><button class="menuitem" id="newProject"><span class="material-symbols-rounded">note_add</span>New project</button><button class="menuitem" id="saveProject"><span class="material-symbols-rounded">save</span>Save project</button><button class="menuitem" id="importProject"><span class="material-symbols-rounded">folder_open</span>Open saved project</button><button class="menuitem" id="menuExport"><span class="material-symbols-rounded">picture_as_pdf</span>Export current board as PNG</button><input id="fileInput" type="file" accept="application/json,.json" hidden></div>
+<div class="panel" id="penPanel"><h3>DRAW SETTINGS</h3><label for="penType">Pen type</label><select id="penType"><option value="ballpoint">Ballpoint</option><option value="fine">Fine liner</option><option value="marker">Marker</option><option value="pencil">Pencil</option><option value="calligraphy">Calligraphy</option></select><label>Ink colour</label><div class="colors" id="colors"></div><label for="thickness">Thickness</label><div class="range"><input id="thickness" type="range" min="1" max="30" value="5"><span id="thicknessValue">5</span></div></div>
+<div class="panel" id="settingsPanel"><h3>WHITEBOARD SETTINGS</h3><label for="background">Canvas background</label><select id="background"><option value="#ffffff">White</option><option value="#fffdf4">Warm white</option><option value="#f2f7ff">Pale blue</option><option value="#f4fff4">Pale green</option><option value="#20202a">Dark</option></select><label for="gridStyle">Canvas pattern</label><select id="gridStyle"><option value="plain">Plain</option><option value="dots">Dots</option><option value="grid">Grid</option><option value="lines">Lines</option></select><button class="menuitem" id="toolbarSide"><span class="material-symbols-rounded">swap_horiz</span>Move toolbar to right</button></div>
+<div class="panel" id="slidesPanel"><h3>SLIDES</h3><div class="slidegrid" id="slideGrid"></div></div>
+<div id="toast"></div>
 </div>
 <script>
-(()=> {
-"use strict";
-const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
-const canvas=$("#board"),ctx=canvas.getContext("2d"),paper=$(".paper-wrap");
-const STORAGE="classroom-board-v2";
-let pages=[[]],page=0,tool="pen",color="#202833",size=5,penType="ballpoint",drawing=false,current=null,history=[],redo=[],saveTimer=null;
-const status=t=>$("#saveStatus").textContent=t;
-function snapshot(){history.push(JSON.stringify(pages[page]));if(history.length>80)history.shift();redo=[];historyButtons()}
-function historyButtons(){$("#undoBtn").disabled=!history.length;$("#redoBtn").disabled=!redo.length}
-function stroke(o,c){c.save();c.strokeStyle=o.color;c.fillStyle=o.color;c.lineWidth=o.size;c.lineCap=o.penType==="calligraphy"?"square":"round";c.lineJoin="round";if(o.penType==="fine")c.lineWidth=Math.max(1,o.size*.55);if(o.penType==="marker")c.lineWidth=o.size*2.2;if(o.penType==="pencil")c.globalAlpha=.58;if(o.alpha!==undefined)c.globalAlpha=o.alpha;if(o.type==="path"){if(o.points.length){c.beginPath();c.moveTo(o.points[0].x,o.points[0].y);for(const p of o.points.slice(1))c.lineTo(p.x,p.y);c.stroke()}}else if(o.type==="line"){c.beginPath();c.moveTo(o.x1,o.y1);c.lineTo(o.x2,o.y2);c.stroke()}c.restore()}
-function render(){const w=paper.clientWidth,h=paper.clientHeight,d=window.devicePixelRatio||1;ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,w,h);for(const o of pages[page])stroke(o,ctx);if(current)stroke(current,ctx);$("#pageHeading").textContent="Page "+(page+1);renderThumbs();historyButtons()}
-function resize(){const w=paper.clientWidth,h=paper.clientHeight,d=window.devicePixelRatio||1;canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);canvas.style.width=w+"px";canvas.style.height=h+"px";render()}
-function point(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-function down(e){if(e.button!==undefined&&e.button!==0)return;if(tool==="ruler")return;e.preventDefault();canvas.setPointerCapture(e.pointerId);const p=point(e);drawing=true;if(tool==="pen"||tool==="highlighter"||tool==="eraser"||tool==="laser"){current={type:"path",points:[p],color:tool==="eraser"?"#ffffff":tool==="laser"?"#e53935":color,size:tool==="highlighter"?size*3:tool==="eraser"?size*4:size,penType:tool==="highlighter"?"marker":penType,alpha:tool==="highlighter"?.28:1}}render()}
-function move(e){if(!drawing||!current)return;current.points.push(point(e));render()}
-function up(){if(!drawing)return;drawing=false;if(current){snapshot();pages[page].push(current);current=null;render();scheduleSave()}}
-canvas.addEventListener("pointerdown",down);canvas.addEventListener("pointermove",move);canvas.addEventListener("pointerup",up);canvas.addEventListener("pointercancel",up);
-function renderThumbs(){const list=$("#pageList");list.replaceChildren();pages.forEach((items,i)=>{const b=document.createElement("button");b.className="page-thumb"+(i===page?" active":"");b.type="button";const c=document.createElement("canvas");c.width=160;c.height=100;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,160,100);const sx=160/Math.max(1,paper.clientWidth),sy=100/Math.max(1,paper.clientHeight);for(const o of items){const copy=JSON.parse(JSON.stringify(o));if(copy.type==="path")copy.points=copy.points.map(p=>({x:p.x*sx,y:p.y*sy}));else{copy.x1*=sx;copy.y1*=sy;copy.x2*=sx;copy.y2*=sy}const old=x.lineWidth;stroke(copy,x);x.lineWidth=old}const cap=document.createElement("div");cap.className="page-caption";cap.innerHTML="<span>Page "+(i+1)+"</span><span>"+(items.length?"●":"")+"</span>";b.append(c,cap);b.onclick=()=>{page=i;history=[];redo=[];render()};list.append(b)})}
-function persist(){try{localStorage.setItem(STORAGE,JSON.stringify({title:$("#lessonTitle").value,pages}));status("Saved on this device")}catch(e){status("Could not save — export your lesson")}}
-function scheduleSave(){status("Saving…");clearTimeout(saveTimer);saveTimer=setTimeout(persist,350)}
-function setTool(t){tool=t;$$("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===t));$("#ruler").classList.toggle("show",t==="ruler");canvas.style.cursor=t==="ruler"?"default":"crosshair"}
-$$("[data-tool]").forEach(b=>b.addEventListener("click",()=>setTool(b.dataset.tool)));
-$("#penType").addEventListener("change",e=>penType=e.target.value);
-$$("[data-color]").forEach(b=>b.addEventListener("click",()=>{color=b.dataset.color;$$("[data-color]").forEach(x=>x.classList.toggle("active",x===b))}));
-$("#penSize").addEventListener("input",e=>{size=+e.target.value;$("#sizeValue").textContent=size});
-$("#addPage").onclick=()=>{pages.splice(page+1,0,[]);page++;history=[];redo=[];render();scheduleSave()};
-$("#clearBtn").onclick=()=>{if(!pages[page].length)return;if(!confirm("Clear this page?"))return;snapshot();pages[page]=[];render();scheduleSave()};
-$("#undoBtn").onclick=()=>{if(!history.length)return;redo.push(JSON.stringify(pages[page]));pages[page]=JSON.parse(history.pop());render();scheduleSave()};
-$("#redoBtn").onclick=()=>{if(!redo.length)return;history.push(JSON.stringify(pages[page]));pages[page]=JSON.parse(redo.pop());render();scheduleSave()};
-$("#lessonTitle").addEventListener("input",scheduleSave);$("#saveBtn").onclick=persist;
-$("#fullBtn").onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};
-$("#fitBtn").onclick=resize;
-$("#exportBtn").onclick=()=>{const a=document.createElement("a");a.download="classroom-board-page-"+(page+1)+".png";a.href=canvas.toDataURL("image/png");a.click()};
-const ruler=$("#ruler");let rulerDrag=null;ruler.addEventListener("pointerdown",e=>{const r=ruler.getBoundingClientRect();rulerDrag={x:e.clientX-r.left,y:e.clientY-r.top};ruler.setPointerCapture(e.pointerId);e.stopPropagation()});ruler.addEventListener("pointermove",e=>{if(!rulerDrag)return;const host=paper.getBoundingClientRect();ruler.style.left=Math.max(0,Math.min(host.width-ruler.offsetWidth,e.clientX-host.left-rulerDrag.x))+"px";ruler.style.top=Math.max(0,Math.min(host.height-ruler.offsetHeight,e.clientY-host.top-rulerDrag.y))+"px"});ruler.addEventListener("pointerup",()=>rulerDrag=null);ruler.addEventListener("pointercancel",()=>rulerDrag=null);
-try{const saved=JSON.parse(localStorage.getItem(STORAGE));if(saved&&Array.isArray(saved.pages)&&saved.pages.length){pages=saved.pages;$("#lessonTitle").value=saved.title||"Untitled lesson"}}catch(e){}
-new ResizeObserver(resize).observe(paper);window.addEventListener("resize",resize);resize();historyButtons();
+(()=>{'use strict';
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const canvas=$('#board'),ctx=canvas.getContext('2d'),app=$('#app'),ruler=$('#ruler');
+const palette=['#292832','#e34d59','#3685dc','#55a52e','#f0c52e','#f28a32','#8c5bc2','#15a6a0','#ffffff','#777777'];
+let color=palette[0],size=5,penType='ballpoint',tool='pen',bg='#ffffff',pattern='plain',zoom=1,panX=0,panY=0,active=0;
+let slides=[{strokes:[]}],history=[],redo=[],drawing=false,current=null,lastPoint=null,laserTimer=null,toastTimer=null,toolbarRight=false;
+const STORE='promethean-whiteboard-v3';
+function say(s){const t=$('#toast');t.textContent=s;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1700)}
+function save(){try{localStorage.setItem(STORE,JSON.stringify({name:$('#projectName').value,slides,bg,pattern}));}catch(e){say('Could not save in this browser')}}
+function snapshot(){history.push(JSON.stringify(slides[active].strokes));if(history.length>100)history.shift();redo=[];buttons()}
+function buttons(){$('#undo').disabled=!history.length;$('#redo').disabled=!redo.length}
+function fit(){const d=window.devicePixelRatio||1;canvas.width=Math.round(innerWidth*d);canvas.height=Math.round(innerHeight*d);canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';draw()}
+function world(e){const r=canvas.getBoundingClientRect(),d=window.devicePixelRatio||1;return{x:(e.clientX-r.left-panX)/zoom,y:(e.clientY-r.top-panY)/zoom}}
+function applyBackground(){ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);if(pattern!=='plain'){const d=window.devicePixelRatio||1,step=24*d;ctx.strokeStyle=bg==='#20202a'?'#45434f':'#e7e4eb';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=1;for(let x=0;x<canvas.width;x+=step){for(let y=0;y<canvas.height;y+=step){if(pattern==='dots')ctx.fillRect(x,y,1.5*d,1.5*d);else if(pattern==='grid'){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,canvas.height);ctx.stroke();ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(canvas.width,y);ctx.stroke();break}else if(pattern==='lines'){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke()}}}}ctx.restore()}
+function paintStroke(s,c){c.save();c.lineCap='round';c.lineJoin='round';c.strokeStyle=s.color;c.fillStyle=s.color;c.lineWidth=s.width;if(s.kind==='eraser'){c.globalCompositeOperation='destination-out';c.lineWidth=s.width*4}else if(s.kind==='highlighter'){c.globalAlpha=.26;c.lineWidth=s.width*3.4}else if(s.kind==='laser'){c.globalAlpha=.85;c.lineWidth=s.width*1.8}else if(s.type==='pencil'){c.globalAlpha=.55}else if(s.type==='fine'){c.lineWidth=Math.max(1,s.width*.55)}else if(s.type==='marker'){c.lineWidth=s.width*2.2}else if(s.type==='calligraphy'){c.lineCap='square';c.lineWidth=s.width*1.4}
+if(s.points.length){c.beginPath();c.moveTo(s.points[0].x,s.points[0].y);for(let i=1;i<s.points.length;i++)c.lineTo(s.points[i].x,s.points[i].y);if(s.points.length===1)c.lineTo(s.points[0].x+.01,s.points[0].y+.01);c.stroke()}c.restore()}
+function draw(){const d=window.devicePixelRatio||1;applyBackground();ctx.save();ctx.setTransform(d*zoom,0,0,d*zoom,d*panX,d*panY);for(const s of slides[active].strokes)paintStroke(s,ctx);if(current)paintStroke(current,ctx);ctx.restore();$('#zoomRead').textContent=Math.round(zoom*100)+'%';$('#slideCount').textContent='Slide '+(active+1)+' of '+slides.length;buttons()}
+function chooseTool(t){tool=t;$$('[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===t));canvas.style.cursor=t==='pan'?'grab':t==='eraser'?'cell':'crosshair'}
+function start(e){if(e.button!==undefined&&e.button!==0)return;e.preventDefault();canvas.setPointerCapture(e.pointerId);const p=world(e);drawing=true;lastPoint={x:e.clientX,y:e.clientY};if(tool==='pan'){canvas.style.cursor='grabbing';return}if(tool==='laser'){current={kind:'laser',color:'#ef3f54',width:size,points:[p],type:'ballpoint'};clearTimeout(laserTimer);return}if(tool==='pen'||tool==='highlighter'||tool==='eraser'){current={kind:tool,color,width:size,points:[p],type:penType};draw()}}
+function move(e){if(!drawing)return;if(tool==='pan'){panX+=e.clientX-lastPoint.x;panY+=e.clientY-lastPoint.y;lastPoint={x:e.clientX,y:e.clientY};draw();return}if(!current)return;current.points.push(world(e));draw()}
+function end(){if(!drawing)return;drawing=false;canvas.style.cursor=tool==='pan'?'grab':'crosshair';if(current){if(tool!=='laser'){snapshot();slides[active].strokes.push(current);save()}else{const laser=current;current=null;draw();laserTimer=setTimeout(()=>{if(laser.points.length)draw()},650)}current=null;draw()}}
+canvas.addEventListener('pointerdown',start);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
+function makeColors(){const box=$('#colors');box.replaceChildren();palette.forEach(c=>{const b=document.createElement('button');b.className='color'+(c===color?' selected':'');b.style.background=c;b.title=c;b.onclick=()=>{color=c;makeColors()};box.append(b)})}
+function panel(id,show){$(id).classList.toggle('open',show===undefined?!$(id).classList.contains('open'):show)}
+function renderSlides(){const box=$('#slideGrid');box.replaceChildren();slides.forEach((s,i)=>{const b=document.createElement('button');b.className='slide'+(i===active?' active':'');const c=document.createElement('canvas');c.width=240;c.height=135;const x=c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,240,135);x.save();x.scale(.15,.15);s.strokes.forEach(st=>paintStroke(st,x));x.restore();const label=document.createElement('span');label.textContent='Slide '+(i+1);b.append(c,label);b.onclick=()=>{active=i;history=[];redo=[];draw();renderSlides();panel('#slidesPanel',false)};box.append(b)})}
+$$('[data-tool]').forEach(b=>b.addEventListener('click',()=>chooseTool(b.dataset.tool)));
+$('#penOptions').onclick=()=>{makeColors();panel('#penPanel')};$('#penType').onchange=e=>penType=e.target.value;$('#thickness').oninput=e=>{size=+e.target.value;$('#thicknessValue').textContent=size};
+$('#rulerBtn').onclick=()=>{ruler.classList.toggle('visible');say(ruler.classList.contains('visible')?'Ruler ready — drag it into place':'Ruler hidden')};
+let rulerDrag=null;ruler.addEventListener('pointerdown',e=>{const r=ruler.getBoundingClientRect();rulerDrag={x:e.clientX-r.left,y:e.clientY-r.top};ruler.setPointerCapture(e.pointerId);e.stopPropagation()});ruler.addEventListener('pointermove',e=>{if(!rulerDrag)return;const a=app.getBoundingClientRect();ruler.style.left=Math.max(0,Math.min(a.width-ruler.offsetWidth,e.clientX-a.left-rulerDrag.x))+'px';ruler.style.top=Math.max(0,Math.min(a.height-ruler.offsetHeight,e.clientY-a.top-rulerDrag.y))+'px'});['pointerup','pointercancel'].forEach(ev=>ruler.addEventListener(ev,()=>rulerDrag=null));
+$('#undo').onclick=()=>{if(!history.length)return;redo.push(JSON.stringify(slides[active].strokes));slides[active].strokes=JSON.parse(history.pop());draw();save()};$('#redo').onclick=()=>{if(!redo.length)return;history.push(JSON.stringify(slides[active].strokes));slides[active].strokes=JSON.parse(redo.pop());draw();save()};
+$('#clearBtn').onclick=()=>{if(!slides[active].strokes.length)return;snapshot();slides[active].strokes=[];draw();renderSlides();save();say('Canvas cleared')};
+$('#addSlide').onclick=()=>{slides.splice(active+1,0,{strokes:[]});active++;history=[];redo=[];draw();renderSlides();save()};
+$('#slideSorterBtn').onclick=()=>{renderSlides();panel('#slidesPanel')};
+$('#zoomIn').onclick=()=>{zoom=Math.min(4,zoom*1.15);draw()};$('#zoomOut').onclick=()=>{zoom=Math.max(.25,zoom/1.15);draw()};$('#resetView').onclick=()=>{zoom=1;panX=0;panY=0;draw()};
+$('#settingsBtn').onclick=()=>panel('#settingsPanel');$('#background').onchange=e=>{bg=e.target.value;draw();save()};$('#gridStyle').onchange=e=>{pattern=e.target.value;draw();save()};
+$('#toolbarSide').onclick=()=>{toolbarRight=!toolbarRight;$('#floatbar').style.left=toolbarRight?'auto':'16px';$('#floatbar').style.right=toolbarRight?'16px':'auto';$('#toolbarSide').lastChild.textContent=toolbarRight?'Move toolbar to left':'Move toolbar to right'};
+$('#menuBtn').onclick=()=>panel('#menuPanel');$('#newProject').onclick=()=>{if(confirm('Start a new whiteboard project?')){slides=[{strokes:[]}];active=0;history=[];redo=[];$('#projectName').value='Untitled project';draw();renderSlides();save();panel('#menuPanel',false)}};$('#saveProject').onclick=()=>{save();say('Project saved on this device');panel('#menuPanel',false)};
+function exportPNG(){const a=document.createElement('a');a.download=($('#projectName').value||'whiteboard').replace(/[^a-z0-9-_]+/gi,'-')+'-slide-'+(active+1)+'.png';a.href=canvas.toDataURL('image/png');a.click();panel('#menuPanel',false)}
+$('#exportBtn').onclick=exportPNG;$('#menuExport').onclick=exportPNG;
+$('#importProject').onclick=()=>$('#fileInput').click();$('#fileInput').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data.slides))throw Error();slides=data.slides;active=0;bg=data.bg||'#fff';pattern=data.pattern||'plain';$('#projectName').value=data.name||'Imported project';history=[];redo=[];draw();renderSlides();save();say('Project opened')}catch(err){say('That project file could not be opened')}e.target.value=''};
+$('#projectName').oninput=save;
+let dragging=null;$('#grip').addEventListener('pointerdown',e=>{const r=$('#floatbar').getBoundingClientRect();dragging={x:e.clientX-r.left,y:e.clientY-r.top};$('#grip').setPointerCapture(e.pointerId);e.preventDefault()});$('#grip').addEventListener('pointermove',e=>{if(!dragging)return;const b=$('#floatbar'),r=app.getBoundingClientRect();b.style.top=Math.max(8,Math.min(r.height-b.offsetHeight-8,e.clientY-r.top-dragging.y))+'px';if(e.clientX<r.width/2){b.style.left='10px';b.style.right='auto';toolbarRight=false}else{b.style.right='10px';b.style.left='auto';toolbarRight=true}});['pointerup','pointercancel'].forEach(ev=>$('#grip').addEventListener(ev,()=>dragging=null));
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('.panel')&&!e.target.closest('#penOptions')&&!e.target.closest('#settingsBtn')&&!e.target.closest('#menuBtn')&&!e.target.closest('#slideSorterBtn'))$$('.panel').forEach(p=>p.classList.remove('open'))});
+try{const saved=JSON.parse(localStorage.getItem(STORE));if(saved&&Array.isArray(saved.slides)&&saved.slides.length){slides=saved.slides;bg=saved.bg||'#fff';pattern=saved.pattern||'plain';$('#projectName').value=saved.name||'Untitled project'}}catch(e){}
+makeColors();fit();renderSlides();window.addEventListener('resize',fit);buttons();
 })();
 </script>
 </body>
