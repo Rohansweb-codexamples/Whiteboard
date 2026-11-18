@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f58a24">
+<title>Rohan's Whiteboard</title>
+<style>
+:root{--orange:#ff922e;--orange2:#ffb347;--ink:#202431;--muted:#737989;--line:#e8eaf0;--panel:#fff;--bg:#fff8f0}
+*{box-sizing:border-box}html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);overflow:hidden}body{background:linear-gradient(135deg,#fff4e6,#fffaf5 55%,#fff0df)}
+.app{height:100%;display:flex;flex-direction:column;min-height:0}.topbar{height:68px;flex:none;display:flex;align-items:center;gap:16px;padding:0 20px;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 3px 18px #242b3b0a;z-index:5}.brand{display:flex;align-items:center;gap:11px;min-width:220px}.brandmark{width:38px;height:38px;border-radius:13px;background:linear-gradient(145deg,#ffb34d,#ff792b);display:grid;place-items:center;color:white;font-size:22px;font-weight:900;box-shadow:0 5px 12px #ff8c3238}.brandname{font-size:16px;font-weight:800;letter-spacing:-.4px}.subtitle{font-size:11px;color:#9297a4;margin-top:2px}.docname{border:0;background:transparent;font:600 14px inherit;color:var(--ink);width:180px;outline:none;border-radius:7px;padding:8px}.docname:focus{background:#fff5e9;box-shadow:0 0 0 2px #ffb35a55}.topspacer{flex:1}.status{font-size:11px;color:#8a909c;white-space:nowrap}.actions{display:flex;align-items:center;gap:8px}.btn{border:1px solid var(--line);background:white;color:#3d4350;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.15s}.btn:hover{border-color:#ffb35a;background:#fff8ef;transform:translateY(-1px)}.btn.primary{border:0;background:linear-gradient(110deg,#ff9d37,#ff7b28);color:white;box-shadow:0 5px 12px #ff8c3230}.btn.primary:hover{filter:brightness(1.04)}.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.workspace{display:flex;flex:1;min-height:0;padding:15px;gap:13px}.toolbar{width:66px;flex:none;background:#fff;border:1px solid var(--line);border-radius:17px;padding:9px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;box-shadow:0 8px 28px #2e34400b;overflow:auto}.tool{width:48px;height:47px;border:0;background:transparent;border-radius:12px;display:grid;place-items:center;color:#737989;cursor:pointer;position:relative}.tool svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.tool:hover{background:#fff3e5;color:#e97820}.tool.active{background:#fff0df;color:#e97820;box-shadow:inset 0 0 0 1px #ffcf9b}.tool[title]:hover:after{content:attr(title);position:absolute;left:57px;top:50%;transform:translateY(-50%);white-space:nowrap;background:#242936;color:white;padding:7px 9px;border-radius:7px;font-size:11px;z-index:20;pointer-events:none}.toolsep{height:1px;width:34px;background:var(--line);margin:5px 0}.sidepanel{width:230px;flex:none;background:#fff;border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:0 8px 28px #2e34400b;overflow:auto}.panelhead{font-size:12px;font-weight:800;margin-bottom:15px}.setting{margin:0 0 19px}.setting label{font-size:11px;color:#747b89;font-weight:700;display:flex;justify-content:space-between;margin-bottom:9px}.colors{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.swatch{width:25px;height:25px;border-radius:50%;border:2px solid white;box-shadow:0 0 0 1px #dfe2e8;cursor:pointer}.swatch.selected{box-shadow:0 0 0 2px #ff922e}.range{width:100%;accent-color:#ff922e}.seg{display:flex;gap:5px;background:#f4f5f7;padding:4px;border-radius:9px}.seg button{flex:1;border:0;background:transparent;border-radius:7px;padding:7px 2px;font-size:10px;font-weight:700;color:#737989;cursor:pointer}.seg button.selected{background:white;color:#e97820;box-shadow:0 1px 4px #1f29331a}.hint{font-size:11px;color:#969ba6;line-height:1.5}.boardwrap{flex:1;min-width:0;min-height:0;position:relative;border-radius:17px;overflow:hidden;background:#fff;border:1px solid #e8eaf0;box-shadow:0 8px 28px #2e34400b}.board{position:absolute;inset:0;overflow:hidden;touch-action:none;cursor:crosshair;background-color:#fff;background-image:radial-gradient(#dfe3e9 1px,transparent 1px);background-size:22px 22px}.board.grid-lines{background-image:linear-gradient(#edf0f4 1px,transparent 1px),linear-gradient(90deg,#edf0f4 1px,transparent 1px);background-size:28px 28px}.board.blank{background-image:none}.board canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.board.textmode{cursor:text}.floatbar{position:absolute;left:50%;top:13px;transform:translateX(-50%);display:flex;align-items:center;gap:5px;padding:6px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 5px 20px #2223;z-index:3}.floatbar .btn{padding:7px 10px;border:0}.zoom{position:absolute;right:14px;bottom:14px;display:flex;align-items:center;gap:5px;padding:5px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 3px 15px #2222;z-index:3}.zoom button{border:0;background:transparent;width:29px;height:29px;border-radius:7px;cursor:pointer;color:#535a67;font-size:17px}.zoom button:hover{background:#fff1df}.zoom span{font-size:11px;color:#747b89;min-width:39px;text-align:center}.emptyhint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;color:#a1a6b0}.emptyhint strong{display:block;font-size:15px;color:#717887;margin-bottom:5px}.emptyhint span{font-size:11px}.mobiletools{display:none}
+@media(max-width:850px){.brand{min-width:unset}.subtitle,.docname,.status{display:none}.sidepanel{display:none}.workspace{padding:9px;gap:8px}.toolbar{width:54px;padding:6px 4px}.tool{width:43px;height:43px}.topbar{padding:0 11px;height:60px;gap:8px}.brandname{font-size:14px}.actions{gap:5px}.btn{padding:8px 9px}.btn .word{display:none}}
+@media(max-width:480px){.workspace{padding:6px}.toolbar{width:48px}.tool{width:38px;height:40px}.topbar .actions .btn{font-size:11px}.brandmark{width:33px;height:33px}.floatbar{top:8px}.floatbar .btn{font-size:10px;padding:6px 7px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+ <div class="brand"><div class="brandmark">W</div><div><div class="brandname">Whiteboard</div><div class="subtitle">A space for your ideas</div></div></div>
+ <input id="boardName" class="docname" value="Untitled board" aria-label="Board name">
+ <div class="topspacer"></div><span class="status" id="saveStatus">All changes saved</span>
+ <div class="actions">
+  <button class="btn" id="undoBtn" title="Undo (Ctrl+Z)">↶ <span class="word">Undo</span></button>
+  <button class="btn" id="redoBtn" title="Redo (Ctrl+Y)">↷ <span class="word">Redo</span></button>
+  <button class="btn" id="clearBtn" title="Clear board">⌫ <span class="word">Clear</span></button>
+  <button class="btn primary" id="exportBtn">↓ <span class="word">Export PNG</span></button>
+ </div>
+</header>
+<main class="workspace">
+ <nav class="toolbar" aria-label="Drawing tools">
+  <button class="tool active" data-tool="pen" title="Pen (P)"><svg viewBox="0 0 24 24"><path d="m4 20 4.5-1 11-11a2.1 2.1 0 0 0-3-3l-11 11L4 20Z"/><path d="m14.5 6.5 3 3"/></svg></button>
+  <button class="tool" data-tool="highlighter" title="Highlighter (H)"><svg viewBox="0 0 24 24"><path d="m4 16 9-9 5 5-9 9H4z"/><path d="m13 7 2-2 5 5-2 2M4 21h16"/></svg></button>
+  <button class="tool" data-tool="eraser" title="Eraser (E)"><svg viewBox="0 0 24 24"><path d="m7 21-4-4a2 2 0 0 1 0-3l9-9a2 2 0 0 1 3 0l6 6a2 2 0 0 1 0 3l-7 7H7Z"/><path d="m8 8 8 8M14 21h7"/></svg></button>
+  <div class="toolsep"></div>
+  <button class="tool" data-tool="line" title="Line"><svg viewBox="0 0 24 24"><path d="M5 19 19 5"/></svg></button>
+  <button class="tool" data-tool="rect" title="Rectangle"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="1"/></svg></button>
+  <button class="tool" data-tool="circle" title="Circle"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></button>
+  <button class="tool" data-tool="arrow" title="Arrow"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 5l7 7-7 7"/></svg></button>
+  <div class="toolsep"></div>
+  <button class="tool" data-tool="text" title="Text (T)"><svg viewBox="0 0 24 24"><path d="M4 6V4h16v2M12 4v16M8 20h8"/></svg></button>
+  <button class="tool" data-tool="sticky" title="Sticky note"><svg viewBox="0 0 24 24"><path d="M5 3h14v13l-5 5H5z"/><path d="M14 21v-5h5M8 8h8M8 12h5"/></svg></button>
+  <div class="toolsep"></div>
+  <button class="tool" data-tool="hand" title="Move around"><svg viewBox="0 0 24 24"><path d="M8 11V5a2 2 0 0 1 4 0v5-7a2 2 0 0 1 4 0v8-5a2 2 0 0 1 4 0v8c0 5-3 8-8 8h-1c-3 0-5-2-7-5l-2-3a2 2 0 0 1 3-2l3 3"/></svg></button>
+ </nav>
+ <section class="boardwrap">
+  <div class="board" id="board"><canvas id="canvas"></canvas><div class="emptyhint" id="emptyHint"><strong>Your canvas is ready</strong><span>Pick a tool and start creating</span></div></div>
+  <div class="floatbar"><button class="btn" id="backgroundBtn">▦ Background</button><button class="btn" id="imageBtn">＋ Add image</button><input type="file" id="imageInput" accept="image/*" hidden></div>
+  <div class="zoom"><button id="zoomOut" aria-label="Zoom out">−</button><span id="zoomLabel">100%</span><button id="zoomIn" aria-label="Zoom in">+</button><button id="fitBtn" title="Fit board">⌗</button></div>
+ </section>
+ <aside class="sidepanel">
+  <div class="panelhead">Tool settings</div>
+  <div class="setting"><label>Colour</label><div class="colors" id="colors">
+   <button class="swatch selected" data-color="#202431" style="background:#202431"></button><button class="swatch" data-color="#f04438" style="background:#f04438"></button><button class="swatch" data-color="#ff922e" style="background:#ff922e"></button><button class="swatch" data-color="#f5c542" style="background:#f5c542"></button><button class="swatch" data-color="#22a06b" style="background:#22a06b"></button><button class="swatch" data-color="#2684ff" style="background:#2684ff"></button><button class="swatch" data-color="#8250df" style="background:#8250df"></button><button class="swatch" data-color="#e64980" style="background:#e64980"></button><button class="swatch" data-color="#ffffff" style="background:#fff"></button><button class="swatch" data-color="#8b93a3" style="background:#8b93a3"></button><button class="swatch" data-color="#8b5e3c" style="background:#8b5e3c"></button><button class="swatch" data-color="#111827" style="background:#111827"></button>
+  </div></div>
+  <div class="setting"><label><span>Stroke size</span><span id="sizeValue">4 px</span></label><input class="range" type="range" id="sizeRange" min="1" max="32" value="4"></div>
+  <div class="setting"><label>Line style</label><div class="seg" id="lineStyle"><button class="selected" data-style="solid">Solid</button><button data-style="dashed">Dashed</button><button data-style="dotted">Dotted</button></div></div>
+  <div class="setting"><label>Canvas background</label><div class="seg" id="bgStyle"><button class="selected" data-bg="dots">Dots</button><button data-bg="grid">Grid</button><button data-bg="blank">Plain</button></div></div>
+  <div class="setting"><label>Quick actions</label><button class="btn" id="saveBtn" style="width:100%;justify-content:center">Save board</button></div>
+  <p class="hint">Your work is saved automatically in this browser. Export your board as a PNG to share it.</p>
+ </aside>
+</main>
+</div>
+<script>
+(()=>{
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),board=document.getElementById('board');
+const $=id=>document.getElementById(id);
+let tool='pen',color='#202431',size=4,lineStyle='solid',bg='dots',drawing=false,start=null,last=null,preview=null,history=[],redoStack=[],zoom=1,offset={x:0,y:0},objects=[],saveTimer;
+const dpr=()=>Math.max(1,window.devicePixelRatio||1);
+function resize(){const r=board.getBoundingClientRect(),d=dpr();canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);render()}
+new ResizeObserver(resize).observe(board);
+function snapshot(){history.push(JSON.stringify(objects));if(history.length>60)history.shift();redoStack=[];updateHistory()}
+function updateHistory(){$('undoBtn').disabled=!history.length;$('redoBtn').disabled=!redoStack.length}
+function save(){try{localStorage.setItem('rohans-whiteboard-v1',JSON.stringify({objects,name:$('boardName').value,bg}));$('saveStatus').textContent='All changes saved'}catch(e){$('saveStatus').textContent='Could not save locally'}}
+function scheduleSave(){$('saveStatus').textContent='Saving…';clearTimeout(saveTimer);saveTimer=setTimeout(save,350)}
+function restore(){try{const s=JSON.parse(localStorage.getItem('rohans-whiteboard-v1'));if(s){objects=s.objects||[];$('boardName').value=s.name||'Untitled board';setBg(s.bg||'dots')}}catch(e){}}
+function setBg(v){bg=v;board.classList.toggle('grid-lines',v==='grid');board.classList.toggle('blank',v==='blank');document.querySelectorAll('[data-bg]').forEach(b=>b.classList.toggle('selected',b.dataset.bg===v));render()}
+function point(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left-offset.x)/zoom,y:(e.clientY-r.top-offset.y)/zoom}}
+function drawObj(c,o){c.save();c.translate(offset.x,offset.y);c.scale(zoom,zoom);c.globalAlpha=o.alpha??1;c.strokeStyle=o.color||'#202431';c.fillStyle=o.color||'#202431';c.lineWidth=o.size||4;c.lineCap='round';c.lineJoin='round';c.setLineDash(o.dash||[]);
+if(o.type==='path'){if(!o.points.length){c.restore();return}c.beginPath();c.moveTo(o.points[0].x,o.points[0].y);for(const p of o.points.slice(1))c.lineTo(p.x,p.y);c.stroke()}
+if(o.type==='line'||o.type==='arrow'){c.beginPath();c.moveTo(o.x1,o.y1);c.lineTo(o.x2,o.y2);c.stroke();if(o.type==='arrow'){const a=Math.atan2(o.y2-o.y1,o.x2-o.x1),h=13+o.size;c.beginPath();c.moveTo(o.x2,o.y2);c.lineTo(o.x2-h*Math.cos(a-.48),o.y2-h*Math.sin(a-.48));c.moveTo(o.x2,o.y2);c.lineTo(o.x2-h*Math.cos(a+.48),o.y2-h*Math.sin(a+.48));c.stroke()}}
+if(o.type==='rect'){c.strokeRect(o.x,o.y,o.w,o.h)}
+if(o.type==='circle'){c.beginPath();c.ellipse(o.x+o.w/2,o.y+o.h/2,Math.abs(o.w/2),Math.abs(o.h/2),0,0,Math.PI*2);c.stroke()}
+if(o.type==='text'){c.setLineDash([]);c.font='600 '+(o.size*4+12)+'px Inter, system-ui, sans-serif';c.textBaseline='top';c.fillText(o.text,o.x,o.y)}
+if(o.type==='sticky'){c.setLineDash([]);c.fillStyle=o.fill||'#fff0a8';c.shadowColor='#3332';c.shadowBlur=9;c.fillRect(o.x,o.y,o.w,o.h);c.shadowBlur=0;c.fillStyle='#4a4027';c.font='500 16px system-ui';c.textBaseline='top';const words=(o.text||'Your note').split(' ');let line='',yy=o.y+14;for(const word of words){const t=line+word+' ';if(c.measureText(t).width>o.w-24){c.fillText(line,o.x+12,yy);line=word+' ';yy+=21}else line=t}c.fillText(line,o.x+12,yy)}
+if(o.type==='image'&&o.image){const im=new Image();im.src=o.image;try{c.drawImage(im,o.x,o.y,o.w,o.h)}catch(e){}}
+c.restore()}
+function render(){const r=board.getBoundingClientRect(),d=dpr();ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,r.width,r.height);objects.forEach(o=>drawObj(ctx,o));if(preview)drawObj(ctx,preview);$('emptyHint').style.display=objects.length?'none':'block'}
+function dash(){return lineStyle==='dashed'?[10,7]:lineStyle==='dotted'?[2,7]:[]}
+function down(e){if(e.button!==0)return;if(tool==='hand'){drawing=true;last={x:e.clientX-offset.x,y:e.clientY-offset.y};board.setPointerCapture(e.pointerId);return}const p=point(e);drawing=true;start=p;last=p;board.setPointerCapture(e.pointerId);
+if(tool==='text'||tool==='sticky'){const value=prompt(tool==='text'?'Enter text:':'Write your sticky note:');if(value&&value.trim()){snapshot();objects.push(tool==='text'?{type:'text',x:p.x,y:p.y,text:value,color,size}:{type:'sticky',x:p.x,y:p.y,w:190,h:145,text:value,fill:'#fff0a8'});finish()}else{drawing=false;start=null}return}
+if(tool==='pen'||tool==='highlighter'||tool==='eraser'){preview={type:'path',points:[p],color:tool==='eraser'?'#ffffff':color,size:tool==='highlighter'?size*3:size,alpha:tool==='highlighter'?.28:1,dash:[]}}
+else preview={type:tool==='rect'?'rect':tool==='circle'?'circle':tool==='arrow'?'arrow':'line',x1:p.x,y1:p.y,x:p.x,y:p.y,x2:p.x,y2:p.y,w:0,h:0,color,size,dash:dash()};render()}
+function move(e){if(!drawing)return;if(tool==='hand'){offset.x=e.clientX-last.x;offset.y=e.clientY-last.y;render();return}const p=point(e);last=p;if(preview?.type==='path'){preview.points.push(p)}else if(preview){preview.x2=p.x;preview.y2=p.y;preview.w=p.x-start.x;preview.h=p.y-start.y;preview.x=Math.min(start.x,p.x);preview.y=Math.min(start.y,p.y)}render()}
+function finish(){if(preview){snapshot();objects.push(preview);preview=null;scheduleSave()}drawing=false;start=null;last=null;render()}
+board.addEventListener('pointerdown',down);board.addEventListener('pointermove',move);board.addEventListener('pointerup',finish);board.addEventListener('pointercancel',finish);
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('active',x===b));board.classList.toggle('textmode',tool==='text')});
+document.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{color=b.dataset.color;document.querySelectorAll('[data-color]').forEach(x=>x.classList.toggle('selected',x===b))});
+$('sizeRange').oninput=e=>{size=+e.target.value;$('sizeValue').textContent=size+' px'};
+document.querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{lineStyle=b.dataset.style;document.querySelectorAll('[data-style]').forEach(x=>x.classList.toggle('selected',x===b))});
+document.querySelectorAll('[data-bg]').forEach(b=>b.onclick=()=>setBg(b.dataset.bg));
+$('undoBtn').onclick=()=>{if(!history.length)return;redoStack.push(JSON.stringify(objects));objects=JSON.parse(history.pop());render();updateHistory();scheduleSave()};
+$('redoBtn').onclick=()=>{if(!redoStack.length)return;history.push(JSON.stringify(objects));objects=JSON.parse(redoStack.pop());render();updateHistory();scheduleSave()};
+$('clearBtn').onclick=()=>{if(!objects.length||!confirm('Clear everything from this board?'))return;snapshot();objects=[];render();scheduleSave()};
+$('boardName').oninput=scheduleSave;$('saveBtn').onclick=save;
+$('backgroundBtn').onclick=()=>{const vals=['dots','grid','blank'],i=vals.indexOf(bg);setBg(vals[(i+1)%3])};
+$('zoomIn').onclick=()=>setZoom(zoom*1.15);$('zoomOut').onclick=()=>setZoom(zoom/1.15);$('fitBtn').onclick=()=>{zoom=1;offset={x:0,y:0};setZoom(1)};
+function setZoom(v){zoom=Math.max(.35,Math.min(2.5,v));$('zoomLabel').textContent=Math.round(zoom*100)+'%';render()}
+$('imageBtn').onclick=()=>$('imageInput').click();
+$('imageInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{const im=new Image();im.onload=()=>{snapshot();const w=Math.min(im.width,420),h=im.height*w/im.width;objects.push({type:'image',image:reader.result,x:40,y:40,w,h});render();scheduleSave()};im.src=reader.result};reader.readAsDataURL(f);e.target.value=''};
+$('exportBtn').onclick=()=>{const r=board.getBoundingClientRect(),out=document.createElement('canvas');out.width=r.width*2;out.height=r.height*2;const c=out.getContext('2d');c.scale(2,2);c.fillStyle='#fff';c.fillRect(0,0,r.width,r.height);const old=offset;const oldz=zoom;offset={x:0,y:0};zoom=1;objects.forEach(o=>drawObj(c,o));offset=old;zoom=oldz;const a=document.createElement('a');a.download=($('boardName').value.trim()||'whiteboard').replace(/[^a-z0-9-_]+/gi,'-')+'.png';a.href=out.toDataURL('image/png');a.click()};
+document.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();$('undoBtn').click()}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){$('redoBtn').click()}else if(e.key.toLowerCase()==='p')document.querySelector('[data-tool=pen]').click();else if(e.key.toLowerCase()==='h')document.querySelector('[data-tool=highlighter]').click();else if(e.key.toLowerCase()==='e')document.querySelector('[data-tool=eraser]').click();else if(e.key.toLowerCase()==='t')document.querySelector('[data-tool=text]').click()});
+restore();resize();updateHistory();setBg(bg);
+})();
+</script>
+</body>
+</html>
