@@ -1,63 +1,460 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Classroom Whiteboard</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
-<style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Inter,Arial,sans-serif;color:#302d38;background:#fff}button,input,select{font:inherit}button{cursor:pointer}#app{height:100dvh;position:relative;background:#fff;overflow:hidden}
-.split{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);background:#fff}.side{position:relative;min-width:0;overflow:hidden;background:#fff}.side+ .side{border-left:2px dashed #bcb6c9}.drawing{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair;background:#fff}
-.sidebar{position:absolute;z-index:3;left:50%;transform:translateX(-50%);bottom:15px;display:flex;align-items:center;gap:5px;padding:8px 10px;background:#fff;border:1px solid #e7e2ee;border-radius:17px;box-shadow:0 5px 24px #2b20351c;width:max-content;max-width:calc(100% - 14px);flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;overscroll-behavior-x:contain}
-.drag-handle{width:19px;height:34px;flex:none;border:0;background:transparent;color:#a39baa;cursor:grab;touch-action:none;padding:0;display:grid;place-items:center}.drag-handle .material-symbols-rounded{font-size:19px}.tool{width:39px;height:39px;flex:none;border:0;border-radius:10px;background:#fff;color:#595363;display:grid;place-items:center}.tool .material-symbols-rounded{font-size:22px}.tool:hover{background:#f5f0fc}.tool.active{background:#eee5ff;color:#7043bd;box-shadow:inset 0 0 0 1px #d8c6fb}
-.sep{height:27px;width:1px;background:#e9e5ed;flex:none;margin:0 2px}.palette{display:flex;gap:6px;align-items:center}.swatch{width:24px;height:24px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px #cfcbd5;flex:none;padding:0}.swatch.active{box-shadow:0 0 0 2px #7446c4}.more-colours{width:34px;height:34px;border:0;border-radius:10px;background:linear-gradient(135deg,#ff7a45,#ed4e93,#7956d8,#388be8);color:white;display:grid;place-items:center;flex:none}.width{width:68px;accent-color:#7649c5;flex:none}.widthnum{font-size:10px;color:#706a79;min-width:13px;text-align:center}
-.fab{position:absolute;z-index:12;right:20px;top:18px;width:54px;height:54px;border:0;border-radius:50%;background:linear-gradient(140deg,#ff9b35,#f15a8a 48%,#7654db);color:white;box-shadow:0 5px 18px #8e55c84d;display:grid;place-items:center}.fab .material-symbols-rounded{font-size:28px}.fab:active{transform:scale(.96)}
-.fabmenu{position:absolute;z-index:11;right:20px;top:82px;display:none;gap:8px;flex-direction:column}.fabmenu.open{display:flex}.fabmenu button{border:1px solid #e9e3f0;background:#fff;border-radius:12px;padding:10px 13px;box-shadow:0 4px 14px #251b301b;display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600;color:#4e4758;white-space:nowrap}.fabmenu button .material-symbols-rounded{color:#7951bd}
-.panel{position:absolute;z-index:15;display:none;min-width:240px;max-width:calc(100vw - 20px);background:#fff;border:1px solid #e8e2ef;border-radius:14px;box-shadow:0 9px 30px #241a3029;padding:0;overflow:hidden}.panel.open{display:block}.panelhead{height:42px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;background:#faf8fd;border-bottom:1px solid #eee9f4;font-size:12px;font-weight:800;cursor:grab;touch-action:none}.panelhead button{border:0;background:transparent;color:#6e6679}.panelbody{padding:12px}.panelbody label{display:block;font-size:11px;color:#6e6876;margin:9px 0 5px}.panelbody select,.panelbody input[type=text]{width:100%;height:34px;border:1px solid #e1dce8;border-radius:7px;padding:0 8px;background:#fff;font-size:12px}.panelbody input[type=range]{width:100%;accent-color:#7950c4}.panelbody .action{width:100%;border:0;border-radius:8px;padding:9px;background:#f3edfc;color:#6842a9;font-weight:700;font-size:12px;margin-top:7px}.page-row{display:flex;gap:7px;align-items:center}.page-row button{border:1px solid #e4deeb;border-radius:8px;background:#fff;padding:8px 10px;color:#544b61}.pageinfo{font-size:11px;color:#625b6b;flex:1;text-align:center}
-#settings{right:18px;top:148px;width:260px}#pages{right:18px;top:148px;width:265px}#colourPicker{right:18px;top:148px;width:260px}
-#ruler{position:absolute;z-index:8;display:none;left:28%;top:35%;width:310px;height:44px;border:1px solid #958ba5;border-radius:4px;background:#ffffffed;box-shadow:0 3px 10px #0002;touch-action:none;cursor:grab}#ruler.show{display:block}#ruler:before{content:"";position:absolute;left:8px;right:8px;top:0;height:20px;border-bottom:1px solid #aaa1b5;background:repeating-linear-gradient(90deg,#756d80 0 1px,transparent 1px 10px)}#ruler:after{content:"0   1   2   3   4   5   6   7   8   9";position:absolute;left:10px;bottom:3px;font-size:9px;letter-spacing:2px;color:#62596d}
-#toast{position:absolute;z-index:30;bottom:78px;left:50%;transform:translateX(-50%);background:#292431;color:white;border-radius:9px;padding:9px 13px;font-size:11px;opacity:0;pointer-events:none}#toast.show{opacity:1}
-@media(max-width:700px){.sidebar{gap:3px;padding:6px 5px;bottom:7px}.tool{width:32px;height:34px}.tool .material-symbols-rounded{font-size:19px}.swatch{width:19px;height:19px}.palette{gap:4px}.width{width:43px}.more-colours{width:29px;height:29px}.fab{right:10px;top:10px;width:46px;height:46px}.fabmenu{right:10px;top:63px}.sidebar{max-width:calc(100% - 8px)}}
-@media(max-width:450px){.sidebar{justify-content:flex-start;width:calc(100% - 10px);bottom:5px;padding:5px 6px;gap:4px}.drag-handle{width:16px}.tool{width:31px;height:32px}.tool .material-symbols-rounded{font-size:18px}.swatch{width:18px;height:18px}.sep{height:21px}.width{width:38px}.side{padding-bottom:55px}}
-</style></head><body><div id="app">
-<div class="split" id="split">
- <section class="side"><canvas class="drawing" id="leftBoard"></canvas><div class="sidebar" data-side="0"><button class="drag-handle" type="button" title="Drag toolbar"><span class="material-symbols-rounded">drag_indicator</span></button><button class="tool active" data-tool="pen" title="Pen"><span class="material-symbols-rounded">edit</span></button><button class="tool" data-tool="highlighter" title="Highlighter"><span class="material-symbols-rounded">ink_highlighter</span></button><div class="sep"></div><div class="palette"></div><button class="more-colours" title="More colours"><span class="material-symbols-rounded">palette</span></button><div class="sep"></div><button class="tool" data-tool="eraser" title="Eraser"><span class="material-symbols-rounded">ink_eraser</span></button><button class="tool" data-tool="ruler" title="Ruler"><span class="material-symbols-rounded">straighten</span></button><input class="width" type="range" min="1" max="24" value="4" title="Pen thickness"><span class="widthnum">4</span><button class="tool clear" title="Clear this side"><span class="material-symbols-rounded">delete_sweep</span></button></div></section>
- <section class="side"><canvas class="drawing" id="rightBoard"></canvas><div class="sidebar" data-side="1"><button class="drag-handle" type="button" title="Drag toolbar"><span class="material-symbols-rounded">drag_indicator</span></button><button class="tool active" data-tool="pen" title="Pen"><span class="material-symbols-rounded">edit</span></button><button class="tool" data-tool="highlighter" title="Highlighter"><span class="material-symbols-rounded">ink_highlighter</span></button><div class="sep"></div><div class="palette"></div><button class="more-colours" title="More colours"><span class="material-symbols-rounded">palette</span></button><div class="sep"></div><button class="tool" data-tool="eraser" title="Eraser"><span class="material-symbols-rounded">ink_eraser</span></button><button class="tool" data-tool="ruler" title="Ruler"><span class="material-symbols-rounded">straighten</span></button><input class="width" type="range" min="1" max="24" value="4" title="Pen thickness"><span class="widthnum">4</span><button class="tool clear" title="Clear this side"><span class="material-symbols-rounded">delete_sweep</span></button></div></section>
-</div>
-<button class="fab" id="fab" title="Create and page settings"><span class="material-symbols-rounded">add</span></button>
-<div class="fabmenu" id="fabmenu"><button id="newPage"><span class="material-symbols-rounded">add_box</span>New page</button><button id="pageSettings"><span class="material-symbols-rounded">tune</span>Page settings</button><button id="slideList"><span class="material-symbols-rounded">view_carousel</span>Pages and navigation</button><button id="save"><span class="material-symbols-rounded">save</span>Save whiteboard</button><button id="export"><span class="material-symbols-rounded">download</span>Export both boards</button></div>
-<div class="panel" id="settings"><div class="panelhead"><span>PAGE SETTINGS</span><button class="close">✕</button></div><div class="panelbody"><label>Background colour</label><input id="pageBg" type="color" value="#ffffff" style="width:100%;height:35px;border:0"><label>Background pattern</label><select id="pattern"><option value="plain">Plain</option><option value="dots">Dots</option><option value="grid">Grid</option><option value="lines">Ruled lines</option></select><label>Page name</label><input id="pageName" type="text" value="Page 1"></div></div>
-<div class="panel" id="pages"><div class="panelhead"><span>PAGES</span><button class="close">✕</button></div><div class="panelbody"><div class="page-row"><button id="prev">‹</button><span class="pageinfo" id="pageInfo">Page 1 of 1</span><button id="next">›</button></div><button class="action" id="duplicate">Duplicate current page</button><button class="action" id="deletePage">Delete current page</button></div></div>
-<div class="panel" id="colourPicker"><div class="panelhead"><span>CHOOSE INK COLOUR</span><button class="close">✕</button></div><div class="panelbody"><label>Custom colour</label><input id="customColor" type="color" value="#25232b" style="width:100%;height:38px;border:0"><label>Apply to</label><select id="applySide"><option value="0">Left board</option><option value="1">Right board</option></select><button class="action" id="applyColor">Use this colour</button></div></div>
-<div id="ruler"></div><div id="toast"></div>
-</div>
-<script>
-(()=>{'use strict';
-const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s)),STORE='classroom-whiteboard-split-v4';
-const colours=['#24232b','#2878d0','#e34452','#2d9b55','#f1c232','#f28a27','#8c56c9','#14a6a0','#f4f4f4'];
-const canvases=[$('#leftBoard'),$('#rightBoard')],contexts=canvases.map(c=>c.getContext('2d'));
-let pages=[{name:'Page 1',bg:'#ffffff',pattern:'plain',boards:[[],[]]}],page=0;
-let states=[{tool:'pen',color:colours[0],size:4},{tool:'pen',color:colours[0],size:4}],activeDraws=new Map(),toastTimer=null,rulerDrag=null;
-function say(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1500)}
-function save(){try{localStorage.setItem(STORE,JSON.stringify({pages,page,states}))}catch(e){say('Unable to save in this browser')}}
-function current(){return pages[page]}
-function sizeCanvas(){canvases.forEach((c,i)=>{const r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=Math.max(1,Math.round(r.width*d));c.height=Math.max(1,Math.round(r.height*d));draw(i)})}
-function paint(ctx,stroke){ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=stroke.color;ctx.lineWidth=stroke.size;if(stroke.tool==='eraser'){ctx.globalCompositeOperation='destination-out';ctx.lineWidth=stroke.size*4}else if(stroke.tool==='highlighter'){ctx.globalAlpha=.27;ctx.lineWidth=stroke.size*3.5}ctx.beginPath();stroke.points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));if(stroke.points.length===1)ctx.lineTo(stroke.points[0].x+.1,stroke.points[0].y+.1);ctx.stroke();ctx.restore()}
-function draw(i){const c=canvases[i],ctx=contexts[i],d=devicePixelRatio||1,p=current();ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=p.bg;ctx.fillRect(0,0,c.width,c.height);if(p.pattern!=='plain'){const step=24*d;ctx.strokeStyle=p.bg==='#20202a'?'#484653':'#e7e3eb';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=d;for(let x=0;x<c.width;x+=step)for(let y=0;y<c.height;y+=step){if(p.pattern==='dots')ctx.fillRect(x,y,1.5*d,1.5*d);else if(p.pattern==='grid'){ctx.strokeRect(x,y,step,step)}else if(p.pattern==='lines'){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke()}}}ctx.setTransform(d,0,0,d,0,0);p.boards[i].forEach(s=>paint(ctx,s));for(const active of activeDraws.values())if(active.side===i)paint(ctx,active.stroke)}
-function point(e,c){const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-function start(e,i){if(e.button!==undefined&&e.button!==0)return;const s=states[i];if(s.tool==='ruler')return;const p=point(e,canvases[i]);activeDraws.set(e.pointerId,{side:i,stroke:{tool:s.tool,color:s.color,size:s.size,points:[p]}});draw(i);e.preventDefault()}
-function move(e){const active=activeDraws.get(e.pointerId);if(!active)return;active.stroke.points.push(point(e,canvases[active.side]));draw(active.side)}
-function end(e){const active=activeDraws.get(e.pointerId);if(!active)return;activeDraws.delete(e.pointerId);current().boards[active.side].push(active.stroke);draw(active.side);save()}
-canvases.forEach((c,i)=>c.addEventListener('pointerdown',e=>start(e,i)));
-window.addEventListener('pointermove',move);window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);
-function paletteUI(){ $$('.sidebar').forEach((bar,i)=>{const p=bar.querySelector('.palette');p.replaceChildren();colours.forEach(col=>{const b=document.createElement('button');b.className='swatch'+(states[i].color===col?' active':'');b.style.background=col;b.title=col;b.onclick=()=>{states[i].color=col;paletteUI();save()};p.append(b)});bar.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',states[i].tool===b.dataset.tool));bar.querySelector('.width').value=states[i].size;bar.querySelector('.widthnum').textContent=states[i].size})}
-$$('.sidebar').forEach((bar,i)=>{bar.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{states[i].tool=b.dataset.tool;if(b.dataset.tool==='ruler'){$('#ruler').classList.add('show');say('Drag the ruler, then select Pen to draw along its edge')}paletteUI()});bar.querySelector('.width').oninput=e=>{states[i].size=+e.target.value;bar.querySelector('.widthnum').textContent=e.target.value;save()};bar.querySelector('.clear').onclick=()=>{current().boards[i]=[];draw(i);save();say((i?'Right':'Left')+' board cleared')};bar.querySelector('.more-colours').onclick=()=>{$('#applySide').value=i;$('#colourPicker').classList.add('open')}})
-$('.sidebar').forEach(bar=>{const side=bar.closest('.side'),handle=bar.querySelector('.drag-handle');let drag=null;handle.addEventListener('pointerdown',e=>{const br=bar.getBoundingClientRect(),sr=side.getBoundingClientRect();drag={x:e.clientX-br.left,y:e.clientY-br.top,sideRect:sr};handle.setPointerCapture(e.pointerId);e.preventDefault()});handle.addEventListener('pointermove',e=>{if(!drag)return;const x=Math.max(0,Math.min(drag.sideRect.width-bar.offsetWidth,e.clientX-drag.sideRect.left-drag.x)),y=Math.max(0,Math.min(drag.sideRect.height-bar.offsetHeight,e.clientY-drag.sideRect.top-drag.y));bar.style.left=x+'px';bar.style.top=y+'px';bar.style.right='auto';bar.style.bottom='auto';bar.style.transform='none'});['pointerup','pointercancel'].forEach(ev=>handle.addEventListener(ev,()=>drag=null))});
-function refreshPage(){canvases.forEach((_,i)=>draw(i));$('#pageInfo').textContent=current().name+' · '+(page+1)+' of '+pages.length;$('#pageName').value=current().name;$('#pageBg').value=current().bg;$('#pattern').value=current().pattern;save()}
-function openPanel(id){$$('.panel').forEach(p=>p.classList.remove('open'));$(id).classList.add('open')}
-$('#fab').onclick=()=>$('#fabmenu').classList.toggle('open');$('#newPage').onclick=()=>{pages.splice(page+1,0,{name:'Page '+(pages.length+1),bg:current().bg,pattern:current().pattern,boards:[[],[]]});page++;refreshPage();$('#fabmenu').classList.remove('open');say('New page created')};$('#pageSettings').onclick=()=>{openPanel('#settings');$('#fabmenu').classList.remove('open')};$('#slideList').onclick=()=>{openPanel('#pages');$('#fabmenu').classList.remove('open')};$('#save').onclick=()=>{save();say('Whiteboard saved on this device');$('#fabmenu').classList.remove('open')};
-$('#export').onclick=()=>{canvases.forEach((c,i)=>{const a=document.createElement('a');a.download='whiteboard-page-'+(page+1)+'-'+(i?'right':'left')+'.png';a.href=c.toDataURL('image/png');a.click()});$('#fabmenu').classList.remove('open')};
-$('#prev').onclick=()=>{if(page>0){page--;refreshPage()}};$('#next').onclick=()=>{if(page<pages.length-1){page++;refreshPage()}};$('#duplicate').onclick=()=>{const p=JSON.parse(JSON.stringify(current()));p.name='Page '+(pages.length+1);pages.splice(page+1,0,p);page++;refreshPage()};$('#deletePage').onclick=()=>{if(pages.length===1){current().boards=[[],[]]}else{pages.splice(page,1);page=Math.min(page,pages.length-1)}refreshPage()};
-$('#pageBg').oninput=e=>{current().bg=e.target.value;canvases.forEach((_,i)=>draw(i));save()};$('#pattern').onchange=e=>{current().pattern=e.target.value;canvases.forEach((_,i)=>draw(i));save()};$('#pageName').oninput=e=>{current().name=e.target.value;$('#pageInfo').textContent=current().name+' · '+(page+1)+' of '+pages.length;save()};
-$('#applyColor').onclick=()=>{const i=+$('#applySide').value;states[i].color=$('#customColor').value;paletteUI();save();$('#colourPicker').classList.remove('open')};
-$$('.close').forEach(b=>b.onclick=()=>b.closest('.panel').classList.remove('open'));
-$$('.panel').forEach(panel=>{const head=panel.querySelector('.panelhead');let drag=null;head.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=panel.getBoundingClientRect();drag={x:e.clientX-r.left,y:e.clientY-r.top};head.setPointerCapture(e.pointerId)});head.addEventListener('pointermove',e=>{if(!drag)return;panel.style.left=Math.max(4,e.clientX-drag.x)+'px';panel.style.top=Math.max(4,e.clientY-drag.y)+'px';panel.style.right='auto'});['pointerup','pointercancel'].forEach(ev=>head.addEventListener(ev,()=>drag=null))});
-const ruler=$('#ruler');ruler.addEventListener('pointerdown',e=>{const r=ruler.getBoundingClientRect();rulerDrag={x:e.clientX-r.left,y:e.clientY-r.top};ruler.setPointerCapture(e.pointerId)});ruler.addEventListener('pointermove',e=>{if(!rulerDrag)return;ruler.style.left=Math.max(0,e.clientX-rulerDrag.x)+'px';ruler.style.top=Math.max(0,e.clientY-rulerDrag.y)+'px'});['pointerup','pointercancel'].forEach(ev=>ruler.addEventListener(ev,()=>rulerDrag=null));
-try{const saved=JSON.parse(localStorage.getItem(STORE));if(saved&&Array.isArray(saved.pages)&&saved.pages.length){pages=saved.pages;page=Math.min(saved.page||0,pages.length-1);if(saved.states)states=saved.states}}catch(e){}
-paletteUI();sizeCanvas();refreshPage();window.addEventListener('resize',sizeCanvas);
-})();</script></body></html>
+# Premium Dual-Mode Whiteboard Workspace
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Premium Whiteboard Workspace</title>
+    <!-- Tailwind CSS for elegant layout utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        canvas {
+            display: block;
+            cursor: crosshair;
+        }
+        /* Elegant smooth slide transitions for toolbars snapping to edges */
+        .snap-dock {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        /* Continuous grid texture background */
+        .grid-bg {
+            background-size: 32px 32px;
+            background-image: linear-gradient(to right, rgba(15, 23, 42, 0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(15, 23, 42, 0.02) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="w-screen h-screen overflow-hidden m-0 p-0 bg-slate-50 font-sans relative flex select-none">
+
+    <!-- GLOBAL APBAR CONTROL HEADER -->
+    <div class="absolute top-6 left-6 bg-white/80 backdrop-blur-xl shadow-lg shadow-slate-100 rounded-2xl p-1.5 flex items-center gap-1.5 border border-white/60 z-50 transition-all duration-300">
+        <button id="mode-single" class="px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-200 text-slate-600 hover:bg-slate-100/80 active:scale-95" title="Full Screen Canvas Mode">
+            Single View
+        </button>
+        <button id="mode-split" class="px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-95" title="Split Screen Dual Mode">
+            Split Screen
+        </button>
+    </div>
+
+    <!-- GLOBAL UTILITIES TRIGGER (TOP RIGHT PLUS BUTTON WITH GRADIENT) -->
+    <button id="global-plus-trigger" class="absolute top-6 right-6 w-12 h-12 bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-purple-200 hover:scale-105 active:scale-95 transition-all duration-300 z-50" title="Workspace Layers & Utilities">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+    </button>
+
+    <!-- GLOBAL ACTION MODAL -->
+    <div id="settings-modal" class="fixed inset-0 bg-slate-900/30 backdrop-blur-md z-50 flex items-center justify-center hidden opacity-0 transition-all duration-300">
+        <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-2xl max-w-sm w-full mx-4 border border-white/80 transform scale-95 transition-all duration-300" id="modal-box">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-base font-extrabold text-slate-900 tracking-tight">Workspace Layout</h3>
+                <button id="modal-close" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <p class="text-xs font-medium text-slate-500 leading-relaxed mb-6">Manage structural layout presentation modes, responsive configurations, and smart snapping dock behaviors instantly.</p>
+            <div class="flex flex-col gap-2.5">
+                <button id="action-reset-docks" class="w-full py-3 px-4 bg-indigo-50/80 hover:bg-indigo-100/80 text-indigo-600 font-bold rounded-2xl text-xs transition-all duration-200 text-left flex items-center gap-3 active:scale-[0.99]">
+                    <span class="text-sm">🔄</span> Reset Docks to Bottom Center
+                </button>
+                <button id="action-snap-top" class="w-full py-3 px-4 bg-slate-100/60 hover:bg-slate-100 text-slate-700 font-bold rounded-2xl text-xs transition-all duration-200 text-left flex items-center gap-3 active:scale-[0.99]">
+                    <span class="text-sm">⬆️</span> Snap All Toolbars to Top Edge
+                </button>
+                <button id="action-snap-bottom" class="w-full py-3 px-4 bg-slate-100/60 hover:bg-slate-100 text-slate-700 font-bold rounded-2xl text-xs transition-all duration-200 text-left flex items-center gap-3 active:scale-[0.99]">
+                    <span class="text-sm">⬇️</span> Snap All Toolbars to Bottom Edge
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEFT WORKSPACE CANVAS DIVISION -->
+    <div id="pane-left" class="w-1/2 h-full relative bg-white border-r border-dashed border-slate-200 grid-bg transition-all duration-300 ease-in-out flex flex-col">
+        <div class="w-full flex-grow relative overflow-hidden">
+            <canvas id="canvas-left" class="w-full h-full"></canvas>
+        </div>
+
+        <!-- Left Smart Toolbar Panel -->
+        <div id="dock-left" class="snap-dock absolute bottom-8 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl shadow-xl shadow-slate-200/60 rounded-full px-5 py-3 flex items-center gap-4 border border-white/80 z-40 select-none max-w-[95%]">
+            <!-- Position Cycle Anchor Handle -->
+            <button class="cycle-position-btn text-slate-400 hover:text-slate-600 p-1.5 hover:bg-slate-50 rounded-full transition-all active:scale-90" data-side="left" title="Cycle Bar Edge Attachment">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                </svg>
+            </button>
+
+            <button id="tool-pen-left" class="p-2.5 rounded-full transition-all duration-200 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-90" title="Pen Tool">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+            </button>
+            <button id="tool-eraser-left" class="p-2.5 rounded-full transition-all duration-200 text-slate-500 hover:bg-slate-100 active:scale-90" title="Eraser Tool">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+
+            <div class="h-5 w-[1px] bg-slate-200"></div>
+
+            <div class="flex items-center gap-2">
+                <button class="swatch-left w-5 h-5 rounded-full bg-slate-900 ring-2 ring-offset-2 ring-slate-900 transition-transform active:scale-110" data-color="#0f172a"></button>
+                <button class="swatch-left w-5 h-5 rounded-full bg-blue-500 transition-transform active:scale-110" data-color="#3b82f6"></button>
+                <button class="swatch-left w-5 h-5 rounded-full bg-rose-500 transition-transform active:scale-110" data-color="#ef4444"></button>
+                <button class="swatch-left w-5 h-5 rounded-full bg-emerald-500 transition-transform active:scale-110" data-color="#10b981"></button>
+                <button class="swatch-left w-5 h-5 rounded-full bg-amber-500 transition-transform active:scale-110" data-color="#f59e0b"></button>
+            </div>
+
+            <div class="h-5 w-[1px] bg-slate-200"></div>
+
+            <button id="clear-left" class="p-2.5 rounded-full text-rose-500 hover:bg-rose-50 transition-all active:scale-90" title="Clear Canvas Layer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- RIGHT WORKSPACE CANVAS DIVISION -->
+    <div id="pane-right" class="w-1/2 h-full relative bg-white grid-bg transition-all duration-300 ease-in-out flex flex-col">
+        <div class="w-full flex-grow relative overflow-hidden">
+            <canvas id="canvas-right" class="w-full h-full"></canvas>
+        </div>
+
+        <!-- Right Smart Toolbar Panel -->
+        <div id="dock-right" class="snap-dock absolute bottom-8 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl shadow-xl shadow-slate-200/60 rounded-full px-5 py-3 flex items-center gap-4 border border-white/80 z-40 select-none max-w-[95%]">
+            <!-- Position Cycle Anchor Handle -->
+            <button class="cycle-position-btn text-slate-400 hover:text-slate-600 p-1.5 hover:bg-slate-50 rounded-full transition-all active:scale-90" data-side="right" title="Cycle Bar Edge Attachment">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                </svg>
+            </button>
+
+            <button id="tool-pen-right" class="p-2.5 rounded-full transition-all duration-200 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-90" title="Pen Tool">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+            </button>
+            <button id="tool-eraser-right" class="p-2.5 rounded-full transition-all duration-200 text-slate-500 hover:bg-slate-100 active:scale-90" title="Eraser Tool">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+
+            <div class="h-5 w-[1px] bg-slate-200"></div>
+
+            <div class="flex items-center gap-2">
+                <button class="swatch-right w-5 h-5 rounded-full bg-slate-900 ring-2 ring-offset-2 ring-slate-900 transition-transform active:scale-110" data-color="#0f172a"></button>
+                <button class="swatch-right w-5 h-5 rounded-full bg-blue-500 transition-transform active:scale-110" data-color="#3b82f6"></button>
+                <button class="swatch-right w-5 h-5 rounded-full bg-rose-500 transition-transform active:scale-110" data-color="#ef4444"></button>
+                <button class="swatch-right w-5 h-5 rounded-full bg-emerald-500 transition-transform active:scale-110" data-color="#10b981"></button>
+                <button class="swatch-right w-5 h-5 rounded-full bg-amber-500 transition-transform active:scale-110" data-color="#f59e0b"></button>
+            </div>
+
+            <div class="h-5 w-[1px] bg-slate-200"></div>
+
+            <button id="clear-right" class="p-2.5 rounded-full text-rose-500 hover:bg-rose-50 transition-all active:scale-90" title="Clear Canvas Layer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPT APPLICATION ARCHITECTURE CORE MATRIX -->
+    <script>
+        // Track ongoing drawings per context to support completely decoupled multi-touch interactions
+        let activePointers = {};
+
+        // Modal State Machine Actions
+        const plusTrigger = document.getElementById('global-plus-trigger');
+        const settingsModal = document.getElementById('settings-modal');
+        const modalClose = document.getElementById('modal-close');
+        const modalBox = document.getElementById('modal-box');
+
+        function toggleModal(open) {
+            if (open) {
+                settingsModal.classList.remove('hidden');
+                setTimeout(() => {
+                    settingsModal.classList.remove('opacity-0');
+                    modalBox.classList.remove('scale-95');
+                }, 10);
+            } else {
+                settingsModal.classList.add('opacity-0');
+                modalBox.classList.add('scale-95');
+                setTimeout(() => settingsModal.classList.add('hidden'), 200);
+            }
+        }
+        plusTrigger.addEventListener('click', () => toggleModal(true));
+        modalClose.addEventListener('click', () => toggleModal(false));
+        settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) toggleModal(false); });
+
+        // Dual-View Mode Configuration Machine
+        const btnSingle = document.getElementById('mode-single');
+        const btnSplit = document.getElementById('mode-split');
+        const paneLeft = document.getElementById('pane-left');
+        const paneRight = document.getElementById('pane-right');
+        let layoutMode = 'split'; 
+
+        function updateLayoutMode(mode) {
+            layoutMode = mode;
+            if (mode === 'single') {
+                btnSingle.className = "px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-95";
+                btnSplit.className = "px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-200 text-slate-600 hover:bg-slate-100/80 active:scale-95";
+                paneLeft.className = "w-full h-full relative bg-white transition-all duration-300 ease-in-out flex flex-col grid-bg";
+                paneRight.classList.add('hidden');
+            } else {
+                btnSplit.className = "px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-95";
+                btnSingle.className = "px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-200 text-slate-600 hover:bg-slate-100/80 active:scale-95";
+                paneLeft.className = "w-1/2 h-full relative bg-white border-r border-dashed border-slate-200 transition-all duration-300 ease-in-out flex flex-col grid-bg";
+                paneRight.classList.remove('hidden');
+            }
+            window.dispatchEvent(new Event('resize'));
+        }
+        btnSingle.addEventListener('click', () => updateLayoutMode('single'));
+        btnSplit.addEventListener('click', () => updateLayoutMode('split'));
+
+        // Magnetic Smart Dock Snap Positions Manager
+        const dockLeft = document.getElementById('dock-left');
+        const dockRight = document.getElementById('dock-right');
+        let dockPositions = { left: 'bottom', right: 'bottom' };
+
+        function applyDockSnapping(side, position) {
+            dockPositions[side] = position;
+            const targetDock = side === 'left' ? dockLeft : dockRight;
+
+            targetDock.classList.remove('bottom-8', 'top-8', 'left-8', 'right-8', 'left-1/2', '-translate-x-1/2', 'top-1/2', '-translate-y-1/2', 'rounded-full', 'rounded-3xl', 'flex-row', 'flex-col', 'py-3', 'px-5', 'py-5', 'px-3');
+
+            if (position === 'bottom') {
+                targetDock.classList.add('bottom-8', 'left-1/2', '-translate-x-1/2', 'flex-row', 'rounded-full', 'py-3', 'px-5');
+            } else if (position === 'top') {
+                targetDock.classList.add('top-8', 'left-1/2', '-translate-x-1/2', 'flex-row', 'rounded-full', 'py-3', 'px-5');
+            } else if (position === 'left-edge') {
+                targetDock.classList.add('left-8', 'top-1/2', '-translate-y-1/2', 'flex-col', 'rounded-3xl', 'py-5', 'px-3');
+            } else if (position === 'right-edge') {
+                targetDock.classList.add('right-8', 'top-1/2', '-translate-y-1/2', 'flex-col', 'rounded-3xl', 'py-5', 'px-3');
+            }
+        }
+
+        document.querySelectorAll('.cycle-position-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const side = btn.getAttribute('data-side');
+                const order = ['bottom', 'left-edge', 'top', 'right-edge'];
+                let nextIdx = (order.indexOf(dockPositions[side]) + 1) % order.length;
+                applyDockSnapping(side, order[nextIdx]);
+            });
+        });
+
+        document.getElementById('action-reset-docks').addEventListener('click', () => { applyDockSnapping('left', 'bottom'); applyDockSnapping('right', 'bottom'); toggleModal(false); });
+        document.getElementById('action-snap-top').addEventListener('click', () => { applyDockSnapping('left', 'top'); applyDockSnapping('right', 'top'); toggleModal(false); });
+        document.getElementById('action-snap-bottom').addEventListener('click', () => { applyDockSnapping('left', 'bottom'); applyDockSnapping('right', 'bottom'); toggleModal(false); });
+
+        // Deterministic High-DPI Whiteboard Canvas Instance Engine
+        function bootstrapBoard(canvasId, paneId, side) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const pane = document.getElementById(paneId);
+
+            let activeTool = 'pen';
+            let activeColor = '#0f172a';
+            let strokeWidth = 4.5;
+
+            function configureRetinaDimensions() {
+                if (side === 'right' && layoutMode === 'single') return;
+
+                const dpr = window.devicePixelRatio || 1;
+                const bounds = pane.getBoundingClientRect();
+
+                const backup = document.createElement('canvas');
+                backup.width = canvas.width;
+                backup.height = canvas.height;
+                const backupCtx = backup.getContext('2d');
+                if (canvas.width > 0 && canvas.height > 0) {
+                    backupCtx.drawImage(canvas, 0, 0);
+                }
+
+                canvas.width = bounds.width * dpr;
+                canvas.height = bounds.height * dpr;
+
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.scale(dpr, dpr);
+
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (backup.width > 0 && backup.height > 0) {
+                    ctx.drawImage(backup, 0, 0, backup.width / dpr, backup.height / dpr);
+                }
+            }
+
+            function fetchCoordinates(touchObject) {
+                const rect = canvas.getBoundingClientRect();
+                return {
+                    x: touchObject.clientX - rect.left,
+                    y: touchObject.clientY - rect.top
+                };
+            }
+
+            // High Precision Multi-Touch Processing Trackers
+            function processTouchStart(e) {
+                if (e.target.closest('.snap-dock')) return;
+                
+                const changedTouches = e.changedTouches;
+                for (let i = 0; i < changedTouches.length; i++) {
+                    const touch = changedTouches[i];
+                    const point = fetchCoordinates(touch);
+                    
+                    activePointers[touch.identifier] = {
+                        lastX: point.x,
+                        lastY: point.y,
+                        canvasId: canvasId
+                    };
+
+                    ctx.beginPath();
+                    ctx.moveTo(point.x, point.y);
+                    ctx.lineWidth = activeTool === 'eraser' ? strokeWidth * 6 : strokeWidth;
+                    ctx.strokeStyle = activeTool === 'eraser' ? '#ffffff' : activeColor;
+                    ctx.lineTo(point.x, point.y);
+                    ctx.stroke();
+                }
+            }
+
+            function processTouchMove(e) {
+                if (e.cancelable) e.preventDefault();
+                
+                const changedTouches = e.changedTouches;
+                for (let i = 0; i < changedTouches.length; i++) {
+                    const touch = changedTouches[i];
+                    const pointerData = activePointers[touch.identifier];
+                    
+                    if (pointerData && pointerData.canvasId === canvasId) {
+                        const point = fetchCoordinates(touch);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(pointerData.lastX, pointerData.lastY);
+                        ctx.lineTo(point.x, point.y);
+                        ctx.lineWidth = activeTool === 'eraser' ? strokeWidth * 6 : strokeWidth;
+                        ctx.strokeStyle = activeTool === 'eraser' ? '#ffffff' : activeColor;
+                        ctx.stroke();
+                        
+                        pointerData.lastX = point.x;
+                        pointerData.lastY = point.y;
+                    }
+                }
+            }
+
+            function processTouchEnd(e) {
+                const changedTouches = e.changedTouches;
+                for (let i = 0; i < changedTouches.length; i++) {
+                    const touch = changedTouches[i];
+                    if (activePointers[touch.identifier]) {
+                        delete activePointers[touch.identifier];
+                    }
+                }
+            }
+
+            // Mouse Fallback Implementations mapped to pointer tracking object
+            let isMouseDown = false;
+            function processMouseDown(e) {
+                if (e.target.closest('.snap-dock')) return;
+                isMouseDown = true;
+                const point = fetchCoordinates(e);
+                
+                activePointers['mouse'] = {
+                    lastX: point.x,
+                    lastY: point.y,
+                    canvasId: canvasId
+                };
+
+                ctx.beginPath();
+                ctx.moveTo(point.x, point.y);
+                ctx.lineWidth = activeTool === 'eraser' ? strokeWidth * 6 : strokeWidth;
+                ctx.strokeStyle = activeTool === 'eraser' ? '#ffffff' : activeColor;
+                ctx.lineTo(point.x, point.y);
+                ctx.stroke();
+            }
+
+            function processMouseMove(e) {
+                if (!isMouseDown) return;
+                const pointerData = activePointers['mouse'];
+                if (pointerData && pointerData.canvasId === canvasId) {
+                    const point = fetchCoordinates(e);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(pointerData.lastX, pointerData.lastY);
+                    ctx.lineTo(point.x, point.y);
+                    ctx.lineWidth = activeTool === 'eraser' ? strokeWidth * 6 : strokeWidth;
+                    ctx.strokeStyle = activeTool === 'eraser' ? '#ffffff' : activeColor;
+                    ctx.stroke();
+                    
+                    pointerData.lastX = point.x;
+                    pointerData.lastY = point.y;
+                }
+            }
+
+            function processMouseUp() {
+                isMouseDown = false;
+                delete activePointers['mouse'];
+            }
+
+            canvas.addEventListener('mousedown', processMouseDown);
+            canvas.addEventListener('mousemove', processMouseMove);
+            window.addEventListener('mouseup', processMouseUp);
+
+            canvas.addEventListener('touchstart', processTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', processTouchMove, { passive: false });
+            window.addEventListener('touchend', processTouchEnd);
+            window.addEventListener('touchcancel', processTouchEnd);
+
+            document.querySelectorAll(`.swatch-${side}`).forEach(element => {
+                element.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll(`.swatch-${side}`).forEach(sw => sw.classList.remove('ring-2', 'ring-offset-2', 'ring-slate-900'));
+                    element.classList.add('ring-2', 'ring-offset-2', 'ring-slate-900');
+                    activeColor = element.getAttribute('data-color');
+                    activeTool = 'pen';
+                    document.getElementById(`tool-pen-${side}`).className = "p-2.5 rounded-full transition-all duration-200 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-90";
+                    document.getElementById(`tool-eraser-${side}`).className = "p-2.5 rounded-full transition-all duration-200 text-slate-500 hover:bg-slate-100 active:scale-90";
+                });
+            });
+
+            const penBtn = document.getElementById(`tool-pen-${side}`);
+            const eraserBtn = document.getElementById(`tool-eraser-${side}`);
+
+            penBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                activeTool = 'pen';
+                penBtn.className = "p-2.5 rounded-full transition-all duration-200 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-90";
+                eraserBtn.className = "p-2.5 rounded-full transition-all duration-200 text-slate-500 hover:bg-slate-100 active:scale-90";
+            });
+
+            eraserBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                activeTool = 'eraser';
+                eraserBtn.className = "p-2.5 rounded-full transition-all duration-200 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-90";
+                penBtn.className = "p-2.5 rounded-full transition-all duration-200 text-slate-500 hover:bg-slate-100 active:scale-90";
+            });
+
+            document.getElementById(`clear-${side}`).addEventListener('click', (e) => {
+                e.stopPropagation();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+
+            window.addEventListener('resize', configureRetinaDimensions);
+            configureRetinaDimensions();
+        }
+
+        bootstrapBoard('canvas-left', 'pane-left', 'left');
+        bootstrapBoard('canvas-right', 'pane-right', 'right');
+    </script>
+</body>
+</html>
+
+
