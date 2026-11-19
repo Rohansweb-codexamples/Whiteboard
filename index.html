@@ -155,7 +155,7 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
  <section class="pane" id="pane-right" hidden><span class="pane-label">WHITEBOARD 2</span><canvas id="canvas-right"></canvas>
   <div class="floatbar right" id="bar-right"><div class="grip" data-grip="right">•••</div>
    <button class="tbtn active" data-side="right" data-tool="pen" title="Pen"><span class="mi">edit</span></button>
-   <button class="tbtn" data-side="right" data-tool="highlighter" title="Highlighter"><span class="mi">highlighter</span></button>
+   <button class="tbtn" data-side="right" data-tool="highlighter" title="Highlighter"><span class="mi">highlight</span></button>
    <button class="tbtn" data-side="right" data-tool="eraser" title="Eraser"><span class="mi">ink_eraser</span></button>
    <button class="tbtn" data-side="right" data-tool="ruler" title="Straight line"><span class="mi">straighten</span></button>
    <button class="tbtn" data-side="right" data-tool="pan" title="Move canvas"><span class="mi">pan_tool</span></button>
@@ -272,9 +272,22 @@ document.querySelectorAll('[data-width]').forEach(i=>i.oninput=()=>{const s=i.da
 document.querySelectorAll('[data-erase]').forEach(i=>i.oninput=()=>{const s=i.dataset.erase;page(s).eraser=+i.value;$('erase-'+s).textContent=i.value;save()});
 function dragBar(s){const bar=$('bar-'+s),grip=bar.querySelector('.grip');let drag=null;grip.addEventListener('pointerdown',e=>{const r=bar.getBoundingClientRect();drag={x:e.clientX-r.left,y:e.clientY-r.top};grip.setPointerCapture(e.pointerId);e.preventDefault()});grip.addEventListener('pointermove',e=>{if(!drag)return;const pane=$('pane-'+s).getBoundingClientRect();const x=Math.max(0,Math.min(pane.width-bar.offsetWidth,e.clientX-pane.left-drag.x)),y=Math.max(0,Math.min(pane.height-bar.offsetHeight,e.clientY-pane.top-drag.y));bar.style.left=x+'px';bar.style.right='auto';bar.style.top=y+'px';bar.style.transform='none'});['pointerup','pointercancel'].forEach(n=>grip.addEventListener(n,()=>drag=null))}
 sides.forEach(dragBar);
+function setupRuler(s){
+ const ruler=$('ruler-'+s),paneEl=$('pane-'+s),grip=ruler.querySelector('.ruler-grip'),edge=ruler.querySelector('.ruler-edge');
+ let moving=null,line=null;
+ function beginMove(e){if(page(s).tool!=='ruler'||e.target===edge)return;const pr=paneEl.getBoundingClientRect(),r=ruler.getBoundingClientRect();moving={x:e.clientX-r.left,y:e.clientY-r.top};ruler.style.transform='none';ruler.style.left=(r.left-pr.left)+'px';ruler.style.top=(r.top-pr.top)+'px';ruler.setPointerCapture(e.pointerId);e.preventDefault();e.stopPropagation()}
+ ruler.addEventListener('pointerdown',beginMove);
+ ruler.addEventListener('pointermove',e=>{if(!moving)return;const pr=paneEl.getBoundingClientRect(),x=Math.max(0,Math.min(pr.width-ruler.offsetWidth,e.clientX-pr.left-moving.x)),y=Math.max(0,Math.min(pr.height-ruler.offsetHeight,e.clientY-pr.top-moving.y));ruler.style.left=x+'px';ruler.style.top=y+'px';e.preventDefault()});
+ ['pointerup','pointercancel','lostpointercapture'].forEach(n=>ruler.addEventListener(n,()=>moving=null));
+ edge.addEventListener('pointerdown',e=>{if(page(s).tool!=='ruler')return;e.preventDefault();e.stopPropagation();const p=pos(s,e);line={start:{x:p.x,y:p.y},last:{x:p.x,y:p.y},pointer:e.pointerId};snapshot(s);edge.setPointerCapture(e.pointerId)});
+ edge.addEventListener('pointermove',e=>{if(!line||line.pointer!==e.pointerId)return;const p=pos(s,e);line.last={x:p.x,y:line.start.y};redraw(s);drawStroke(ctx[s],{tool:'pen',color:page(s).color,width:page(s).width,points:[line.start,line.last]});e.preventDefault()});
+ function finish(e){if(!line||line.pointer!==e.pointerId)return;const st={tool:'pen',color:page(s).color,width:page(s).width,points:[line.start,line.last]};page(s).strokes.push(st);line=null;redraw(s);renderPages();save()}
+ edge.addEventListener('pointerup',finish);edge.addEventListener('pointercancel',finish);
+}
+sides.forEach(setupRuler);
 $('splitBtn').onclick=()=>setSplit(!split);
-function openDashboard(){$('dashboard').hidden=false;renderLibrary();}
-function closeDashboard(){$('dashboard').hidden=true;}
+function openDashboard(){$('dashboard').hidden=false;$('dashboard').classList.add('is-open');renderLibrary();}
+function closeDashboard(){$('dashboard').hidden=true;$('dashboard').classList.remove('is-open');}
 $('dashboardBtn').onclick=openDashboard;$('dashboardClose').onclick=closeDashboard;$('continueBoard').onclick=closeDashboard;
 function renderLibrary(){
  const el=$('libraryList');if(!el)return;el.innerHTML='';
@@ -314,7 +327,7 @@ $('add').onclick=addPage;$('prev').onclick=()=>{state.left.index=Math.max(0,stat
 $('saveBtn').onclick=()=>{save();toast('Board saved on this device')};
 $('exportBtn').onclick=()=>{const s='left',a=document.createElement('a');a.download='whiteboard.png';a.href=canv[s].toDataURL('image/png');a.click()};
 $('projectName').onclick=()=>renameFile(activeFileId);
-load();const savedName=localStorage.getItem(KEY+'-name');if(savedName)$('projectName').textContent=savedName+' ▾';
+load();const savedName=activeFile()?.name||'Untitled whiteboard';$('projectName').textContent=savedName+' ▾';
 sides.forEach(s=>{const p=page(s);$('width-'+s).textContent=p.width;$('erase-'+s).textContent=p.eraser;document.querySelector('[data-width="'+s+'"]').value=p.width;document.querySelector('[data-erase="'+s+'"]').value=p.eraser;document.querySelectorAll('[data-palette="'+s+'"] .swatch').forEach(b=>b.classList.toggle('selected',b.dataset.color===p.color));setTool(s,p.tool)});
 openDashboard();setSplit(split);requestAnimationFrame(()=>sides.forEach(resize));renderPages();updateZoom();
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('dashboard').hidden){closeDashboard();return}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo('left')}if(e.key==='Escape')document.querySelectorAll('.size-pop').forEach(x=>x.classList.remove('open'))});
