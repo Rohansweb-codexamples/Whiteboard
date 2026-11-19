@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#ffffff">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=add,arrow_back,arrow_forward,brush,close,dashboard,delete,draw,edit,grid_on,highlighter,ink_eraser,more_horiz,pan_tool,redo,save,settings,straighten,tune,undo,zoom_in,zoom_out&display=block" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=add,arrow_back,arrow_forward,brush,close,dashboard,delete,draw,edit,grid_on,highlight,ink_eraser,more_horiz,pan_tool,redo,save,settings,straighten,tune,undo,zoom_in,zoom_out&display=block" rel="stylesheet">
 <title>Rohan's Whiteboard</title>
 <style>
 :root{--purple:#6541b8;--purple2:#805bd0;--ink:#252333;--muted:#777486;--line:#e7e4ed;--panel:#fff;--orange:#f59e0b}
@@ -91,6 +91,35 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
 .size-pop.open{display:flex}
 #backgroundMenu{z-index:260}
 
+
+/* Side-mounted tool rails and split divider */
+.floatbar,.floatbar.right{left:12px;right:auto;top:50%;bottom:auto;transform:translateY(-50%);width:58px;max-width:calc(100% - 18px);padding:9px 7px;flex-direction:column;gap:5px;border-radius:17px}
+.floatbar.right{left:12px;right:auto}
+.grip{width:100%;height:18px;border-right:0;border-bottom:1px dotted #c9c2d3;margin:0 0 3px}
+.palette{display:grid;grid-template-columns:repeat(2,17px);gap:7px;padding:5px 0}
+.sep{width:27px;height:1px;margin:3px 0}.tbtn{width:40px;height:39px}
+#workspace.is-split{gap:0;padding:6px 10px}
+#workspace.is-split::after{content:"";position:absolute;z-index:4;pointer-events:none;top:12px;bottom:12px;left:50%;border-left:2px dotted #bdb5ca;transform:translateX(-1px)}
+.view-switch{display:flex;align-items:center;gap:6px;background:#faf9fc;color:#756d80;border-style:dashed;padding:7px 10px}.view-switch .mi{font-size:17px}
+#dashboard[hidden]{display:none}.dashboard{position:fixed;inset:58px 0 55px;z-index:180;background:#f7f5fa;padding:clamp(18px,4vw,48px);overflow:auto}
+.dash-top{max-width:1050px;margin:0 auto 28px;display:flex;justify-content:space-between;align-items:flex-start}
+.dash-kicker{font-size:10px;letter-spacing:.16em;font-weight:800;color:#8667c4;margin-bottom:9px}
+.dash-top h1{font-size:clamp(27px,4vw,40px);letter-spacing:-.04em;margin:0;color:#292438}
+.dash-top p,.dash-section p{color:#817b8d;font-size:13px;margin:8px 0 0}
+.dash-close{border:1px solid #e6e1ec;background:#fff;border-radius:11px;width:40px;height:40px;color:#625a70}
+.dash-actions{max-width:1050px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.dash-card{min-height:155px;text-align:left;border:1px solid #e7e1ed;border-radius:17px;background:#fff;padding:20px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;box-shadow:0 4px 16px #30234108;color:#302a3b}
+.dash-card:hover{border-color:#c7b5e8;transform:translateY(-2px)}
+.dash-card strong{font-size:15px;margin-top:8px}.dash-card small{font-size:12px;color:#8b8495}
+.dash-icon,.recent-icon{width:38px;height:38px;border-radius:12px;background:#f1ebfb;color:#704db6;display:grid;place-items:center}
+.new-board .dash-icon{background:#fff0e6;color:#e67b37}
+.dash-section{max-width:1050px;margin:34px auto 0}.dash-section h2{font-size:17px;margin:0;color:#302a3b}
+.recent-board{margin-top:14px;background:#fff;border:1px solid #e7e1ed;border-radius:14px;padding:14px 17px;display:flex;align-items:center;gap:13px}
+.recent-board>div{display:flex;flex-direction:column;gap:4px;flex:1}.recent-board strong{font-size:13px}.recent-board small{font-size:11px;color:#8b8495}
+.recent-board button{border:0;background:#f3eefb;color:#6948aa;border-radius:9px;padding:9px 12px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:7px}
+.dash-footer{max-width:1050px;margin:28px auto 0;display:flex;justify-content:space-between;color:#a09aaa;font-size:11px}.dash-mark{display:flex;align-items:center;gap:5px;color:#766b89}
+@media(max-width:700px){.dashboard{inset:54px 0 49px;padding:20px 14px}.dash-actions{grid-template-columns:1fr;gap:9px}.dash-card{min-height:95px;padding:14px}.dash-top{margin-bottom:20px}.dash-footer{gap:12px;flex-wrap:wrap}.floatbar,.floatbar.right{left:7px;width:50px;padding:7px 4px}.tbtn{width:38px;height:36px}.palette{gap:5px}.swatch{width:15px;height:15px}.view-switch{font-size:0;gap:0}.view-switch .mi{font-size:19px}}
+@media(max-width:430px){.brand>span{display:none}#dashboardBtn{font-size:0}#dashboardBtn .mi{font-size:19px}.header-tools{gap:4px}}
 </style>
 </head>
 <body>
@@ -101,7 +130,7 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
  <div class="header-tools">
   <button class="headbtn" id="backgroundBtn">Background</button>
   <button class="headbtn" id="zoomOut">−</button><button class="headbtn" id="zoomRead">100%</button><button class="headbtn" id="zoomIn">＋</button>
-  <button class="headbtn" id="splitBtn">Split whiteboard</button>
+  <button class="headbtn" id="dashboardBtn"><span class="mi">dashboard</span> Dashboard</button><button class="headbtn view-switch" id="splitBtn" title="Switch to split view"><span class="mi">splitscreen</span> Split view</button>
   <button class="headbtn" id="exportBtn">Export</button>
   <button class="headbtn primary" id="saveBtn">Save</button>
  </div>
@@ -110,7 +139,7 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
  <section class="pane" id="pane-left"><span class="pane-label">WHITEBOARD 1</span><canvas id="canvas-left"></canvas>
   <div class="floatbar" id="bar-left"><div class="grip" data-grip="left">•••</div>
    <button class="tbtn active" data-side="left" data-tool="pen" title="Pen"><span class="mi">edit</span></button>
-   <button class="tbtn" data-side="left" data-tool="highlighter" title="Highlighter"><span class="mi">highlighter</span></button>
+   <button class="tbtn" data-side="left" data-tool="highlighter" title="Highlighter"><span class="mi">highlight</span></button>
    <button class="tbtn" data-side="left" data-tool="eraser" title="Eraser"><span class="mi">ink_eraser</span></button>
    <button class="tbtn" data-side="left" data-tool="ruler" title="Straight line"><span class="mi">straighten</span></button>
    <button class="tbtn" data-side="left" data-tool="pan" title="Move canvas"><span class="mi">pan_tool</span></button>
@@ -140,6 +169,11 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
   </div>
  </section>
  <div class="menu" id="backgroundMenu"><button data-bg="plain">Plain white</button><button data-bg="grid">Small grid</button><button data-bg="lined">Writing lines</button><button data-bg="dots">Dots</button></div>
+<section id="dashboard" class="dashboard" hidden role="dialog" aria-modal="true" aria-label="Whiteboard dashboard">
+<div class="dash-top"><div><div class="dash-kicker">ROHAN’S WHITEBOARD</div><h1>Your workspace</h1><p>Pick up where you left off or start a fresh board.</p></div><button class="dash-close" id="dashboardClose" aria-label="Close dashboard"><span class="mi">close</span></button></div>
+<div class="dash-actions"><button class="dash-card new-board" id="newBoard"><span class="dash-icon"><span class="mi">add</span></span><strong>New whiteboard</strong><small>Start with a clean page</small></button><button class="dash-card" id="continueBoard"><span class="dash-icon"><span class="mi">draw</span></span><strong>Continue working</strong><small>Return to your current board</small></button><button class="dash-card" id="dashboardSplit"><span class="dash-icon"><span class="mi">splitscreen</span></span><strong>Open split view</strong><small>Work on two boards side by side</small></button></div>
+<div class="dash-section"><h2>Recent board</h2><p>Your board is saved automatically on this device.</p><div class="recent-board"><span class="recent-icon"><span class="mi">description</span></span><div><strong id="dashBoardName">Untitled board</strong><small id="dashBoardInfo">1 page · Ready to continue</small></div><button id="recentOpen">Open board <span class="mi">arrow_forward</span></button></div></div>
+<div class="dash-footer"><span>Changes are stored locally in this browser.</span><span class="dash-mark"><span class="mi">draw</span> Whiteboard</span></div></section>
 </main>
 <footer class="bottom">
  <div class="page-actions"><button class="pagebtn" id="prev">‹</button><button class="pagebtn add" id="add">＋</button><button class="pagebtn" id="next">›</button></div>
@@ -154,11 +188,11 @@ const sides=['left','right'];
 const fresh=()=>({strokes:[],undo:[],redo:[],zoom:1,panX:0,panY:0,tool:'pen',color:'#252333',width:4,eraser:24,bg:'grid'});
 const state={left:{pages:[fresh()],index:0},right:{pages:[fresh()],index:0}};
 const canv={},ctx={},activePointers={left:new Map(),right:new Map()};
-let split=true;
+let split=false;
 function page(s){return state[s].pages[state[s].index]}
 function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),1800)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({state,split}))}catch(e){}}
-function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.state){sides.forEach(s=>{if(d.state[s]?.pages?.length)state[s]=d.state[s]});split=true}}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.state){sides.forEach(s=>{if(d.state[s]?.pages?.length)state[s]=d.state[s]});split=!!d.split}}catch(e){}}
 function snapshot(s){const p=page(s);p.undo.push(JSON.stringify(p.strokes));if(p.undo.length>80)p.undo.shift();p.redo=[]}
 function drawStroke(c,st){if(!st.points?.length)return;c.save();c.globalCompositeOperation=st.tool==='eraser'?'destination-out':'source-over';c.globalAlpha=st.tool==='highlighter'?.28:1;c.strokeStyle=st.color;c.lineWidth=st.tool==='eraser'?st.width:st.tool==='highlighter'?Math.max(st.width,13):st.width;c.lineCap=st.tool==='highlighter'?'square':'round';c.lineJoin='round';c.beginPath();c.moveTo(st.points[0].x,st.points[0].y);if(st.points.length===1)c.lineTo(st.points[0].x+.1,st.points[0].y+.1);else st.points.slice(1).forEach(p=>c.lineTo(p.x,p.y));c.stroke();c.restore()}
 function paintBackground(s){const c=ctx[s],w=canv[s].width,h=canv[s].height,d=window.devicePixelRatio||1,p=page(s);c.save();c.setTransform(1,0,0,1,0,0);c.fillStyle='#fff';c.fillRect(0,0,w,h);c.restore();c.setTransform(d*p.zoom,0,0,d*p.zoom,d*p.panX,d*p.panY);const scale=d*p.zoom;c.save();c.setTransform(1,0,0,1,0,0);c.fillStyle='#fff';c.fillRect(0,0,w,h);c.restore();if(p.bg!=='plain'){const gap=(p.bg==='lined'?34:p.bg==='dots'?24:28)*scale;c.save();c.strokeStyle=p.bg==='lined'?'#dce7f5':'#e9e5ef';c.fillStyle='#e3deea';c.lineWidth=1;const ox=((p.panX*scale)%gap+gap)%gap,oy=((p.panY*scale)%gap+gap)%gap;if(p.bg==='dots'){for(let x=ox;x<w;x+=gap)for(let y=oy;y<h;y+=gap){c.beginPath();c.arc(x,y,1.1,0,Math.PI*2);c.fill()}}else if(p.bg==='lined'){for(let y=oy;y<h;y+=gap){c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke()}}else{for(let x=ox;x<w;x+=gap){c.beginPath();c.moveTo(x,0);c.lineTo(x,h);c.stroke()}for(let y=oy;y<h;y+=gap){c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke()}}c.restore()}p.strokes.forEach(st=>drawStroke(c,st));c.setTransform(d,0,0,d,0,0)}
@@ -173,7 +207,7 @@ function undo(s){const p=page(s);if(!p.undo.length)return toast('Nothing to undo
 function clear(s){const p=page(s);if(!p.strokes.length)return;snapshot(s);p.strokes=[];redraw(s);renderPages();save()}
 function renderPages(){const el=$('pages');el.innerHTML='';const list=state.left.pages;list.forEach((p,i)=>{const b=document.createElement('button');b.className='pagechip'+(i===state.left.index?' active':'');b.textContent=''+(i+1);b.onclick=()=>{state.left.index=i;state.right.index=Math.min(i,state.right.pages.length-1);sides.forEach(redraw);renderPages();save()};el.append(b)});$('pageCount').textContent='Page '+(state.left.index+1)+' of '+list.length}
 function addPage(){sides.forEach(s=>{const p=fresh();state[s].pages.splice(state[s].index+1,0,p);state[s].index++});sides.forEach(redraw);renderPages();save()}
-function setSplit(v){split=v;$('pane-right').hidden=!v;$('splitBtn').textContent=v?'Exit split':'Split whiteboard';$('pane-left').querySelector('.pane-label').textContent=v?'WHITEBOARD 1 · LEFT':'WHITEBOARD';requestAnimationFrame(()=>sides.forEach(s=>{resize(s);redraw(s)}));save()}
+function setSplit(v){split=v;$('pane-right').hidden=!v;$('splitBtn').innerHTML=v?'<span class="mi">splitscreen</span> Single view':'<span class="mi">splitscreen</span> Split view';$('splitBtn').title=v?'Switch to single view':'Switch to split view';$('workspace').classList.toggle('is-split',v);$('pane-left').querySelector('.pane-label').textContent=v?'WHITEBOARD 1 · LEFT':'WHITEBOARD';requestAnimationFrame(()=>sides.forEach(s=>{resize(s);redraw(s)}));save()}
 function updateZoom(){const z=page('left').zoom;$('zoomRead').textContent=Math.round(z*100)+'%'}
 function zoom(f){sides.forEach(s=>{const p=page(s);p.zoom=Math.max(.25,Math.min(3,p.zoom*f));redraw(s)});updateZoom();save()}
 sides.forEach(s=>{canv[s]=$('canvas-'+s);ctx[s]=canv[s].getContext('2d');canv[s].addEventListener('pointerdown',e=>start(s,e));canv[s].addEventListener('pointermove',e=>move(s,e));['pointerup','pointercancel','lostpointercapture'].forEach(n=>canv[s].addEventListener(n,e=>end(s,e)));new ResizeObserver(()=>resize(s)).observe(canv[s].parentElement)});
@@ -226,7 +260,12 @@ document.querySelectorAll('[data-width]').forEach(i=>i.oninput=()=>{const s=i.da
 document.querySelectorAll('[data-erase]').forEach(i=>i.oninput=()=>{const s=i.dataset.erase;page(s).eraser=+i.value;$('erase-'+s).textContent=i.value;save()});
 function dragBar(s){const bar=$('bar-'+s),grip=bar.querySelector('.grip');let drag=null;grip.addEventListener('pointerdown',e=>{const r=bar.getBoundingClientRect();drag={x:e.clientX-r.left,y:e.clientY-r.top};grip.setPointerCapture(e.pointerId);e.preventDefault()});grip.addEventListener('pointermove',e=>{if(!drag)return;const pane=$('pane-'+s).getBoundingClientRect();const x=Math.max(0,Math.min(pane.width-bar.offsetWidth,e.clientX-pane.left-drag.x)),y=Math.max(0,Math.min(pane.height-bar.offsetHeight,e.clientY-pane.top-drag.y));bar.style.left=x+'px';bar.style.right='auto';bar.style.top=y+'px';bar.style.transform='none'});['pointerup','pointercancel'].forEach(n=>grip.addEventListener(n,()=>drag=null))}
 sides.forEach(dragBar);
-$('splitBtn').onclick=()=>setSplit(!split);$('zoomIn').onclick=()=>zoom(1.2);$('zoomOut').onclick=()=>zoom(1/1.2);$('zoomRead').onclick=()=>{sides.forEach(s=>{page(s).zoom=1;page(s).panX=0;page(s).panY=0;redraw(s)});updateZoom();save()};
+$('splitBtn').onclick=()=>setSplit(!split);
+function openDashboard(){const n=localStorage.getItem(KEY+'-name')||'Untitled board';$('dashBoardName').textContent=n;$('dashBoardInfo').textContent=state.left.pages.length+' page'+(state.left.pages.length===1?'':'s')+' · Ready to continue';$('dashboard').hidden=false;}
+function closeDashboard(){$('dashboard').hidden=true;}
+$('dashboardBtn').onclick=openDashboard;$('dashboardClose').onclick=closeDashboard;$('continueBoard').onclick=closeDashboard;$('recentOpen').onclick=closeDashboard;
+$('dashboardSplit').onclick=()=>{setSplit(true);closeDashboard()};
+$('newBoard').onclick=()=>{if(!confirm('Start a new whiteboard? Your current board is saved in this browser.'))return;sides.forEach(s=>{state[s]={pages:[fresh()],index:0}});$('projectName').textContent='Untitled board ▾';localStorage.removeItem(KEY+'-name');setSplit(false);sides.forEach(redraw);renderPages();updateZoom();save();closeDashboard();toast('New whiteboard created')};$('zoomIn').onclick=()=>zoom(1.2);$('zoomOut').onclick=()=>zoom(1/1.2);$('zoomRead').onclick=()=>{sides.forEach(s=>{page(s).zoom=1;page(s).panX=0;page(s).panY=0;redraw(s)});updateZoom();save()};
 $('backgroundBtn').onclick=e=>{
  e.stopPropagation();
  const menu=$('backgroundMenu'),r=$('backgroundBtn').getBoundingClientRect();
@@ -243,7 +282,7 @@ $('projectName').onclick=()=>{const name=prompt('Name this whiteboard project','
 load();const savedName=localStorage.getItem(KEY+'-name');if(savedName)$('projectName').textContent=savedName+' ▾';
 sides.forEach(s=>{const p=page(s);$('width-'+s).textContent=p.width;$('erase-'+s).textContent=p.eraser;document.querySelector('[data-width="'+s+'"]').value=p.width;document.querySelector('[data-erase="'+s+'"]').value=p.eraser;document.querySelectorAll('[data-palette="'+s+'"] .swatch').forEach(b=>b.classList.toggle('selected',b.dataset.color===p.color));setTool(s,p.tool)});
 setSplit(split);requestAnimationFrame(()=>sides.forEach(resize));renderPages();updateZoom();
-window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo('left')}if(e.key==='Escape')document.querySelectorAll('.size-pop').forEach(x=>x.classList.remove('open'))});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('dashboard').hidden){closeDashboard();return}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo('left')}if(e.key==='Escape')document.querySelectorAll('.size-pop').forEach(x=>x.classList.remove('open'))});
 })();
 </script>
 </body>
