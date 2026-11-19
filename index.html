@@ -101,7 +101,7 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
 #workspace.is-split{gap:0;padding:6px 10px}
 #workspace.is-split::after{content:"";position:absolute;z-index:4;pointer-events:none;top:12px;bottom:12px;left:50%;border-left:2px dotted #bdb5ca;transform:translateX(-1px)}
 .view-switch{display:flex;align-items:center;gap:6px;background:#faf9fc;color:#756d80;border-style:dashed;padding:7px 10px}.view-switch .mi{font-size:17px}
-#dashboard[hidden]{display:none}.dashboard{position:fixed;inset:58px 0 55px;z-index:180;background:#f7f5fa;padding:clamp(18px,4vw,48px);overflow:auto}
+#dashboard{display:none}#dashboard.is-open{display:block}.dashboard{position:fixed;inset:58px 0 55px;z-index:180;background:#f7f5fa;padding:clamp(18px,4vw,48px);overflow:auto}
 .dash-top{max-width:1050px;margin:0 auto 28px;display:flex;justify-content:space-between;align-items:flex-start}
 .dash-kicker{font-size:10px;letter-spacing:.16em;font-weight:800;color:#8667c4;margin-bottom:9px}
 .dash-top h1{font-size:clamp(27px,4vw,40px);letter-spacing:-.04em;margin:0;color:#292438}
@@ -261,8 +261,8 @@ document.querySelectorAll('[data-erase]').forEach(i=>i.oninput=()=>{const s=i.da
 function dragBar(s){const bar=$('bar-'+s),grip=bar.querySelector('.grip');let drag=null;grip.addEventListener('pointerdown',e=>{const r=bar.getBoundingClientRect();drag={x:e.clientX-r.left,y:e.clientY-r.top};grip.setPointerCapture(e.pointerId);e.preventDefault()});grip.addEventListener('pointermove',e=>{if(!drag)return;const pane=$('pane-'+s).getBoundingClientRect();const x=Math.max(0,Math.min(pane.width-bar.offsetWidth,e.clientX-pane.left-drag.x)),y=Math.max(0,Math.min(pane.height-bar.offsetHeight,e.clientY-pane.top-drag.y));bar.style.left=x+'px';bar.style.right='auto';bar.style.top=y+'px';bar.style.transform='none'});['pointerup','pointercancel'].forEach(n=>grip.addEventListener(n,()=>drag=null))}
 sides.forEach(dragBar);
 $('splitBtn').onclick=()=>setSplit(!split);
-function openDashboard(){const n=localStorage.getItem(KEY+'-name')||'Untitled board';$('dashBoardName').textContent=n;$('dashBoardInfo').textContent=state.left.pages.length+' page'+(state.left.pages.length===1?'':'s')+' · Ready to continue';$('dashboard').hidden=false;}
-function closeDashboard(){$('dashboard').hidden=true;}
+function openDashboard(){const n=localStorage.getItem(KEY+'-name')||'Untitled board';$('dashBoardName').textContent=n;$('dashBoardInfo').textContent=state.left.pages.length+' page'+(state.left.pages.length===1?'':'s')+' · Ready to continue';$('dashboard').hidden=false;$('dashboard').classList.add('is-open');}
+function closeDashboard(){$('dashboard').hidden=true;$('dashboard').classList.remove('is-open');}
 $('dashboardBtn').onclick=openDashboard;$('dashboardClose').onclick=closeDashboard;$('continueBoard').onclick=closeDashboard;$('recentOpen').onclick=closeDashboard;
 $('dashboardSplit').onclick=()=>{setSplit(true);closeDashboard()};
 $('newBoard').onclick=()=>{if(!confirm('Start a new whiteboard? Your current board is saved in this browser.'))return;sides.forEach(s=>{state[s]={pages:[fresh()],index:0}});$('projectName').textContent='Untitled board ▾';localStorage.removeItem(KEY+'-name');setSplit(false);sides.forEach(redraw);renderPages();updateZoom();save();closeDashboard();toast('New whiteboard created')};$('zoomIn').onclick=()=>zoom(1.2);$('zoomOut').onclick=()=>zoom(1/1.2);$('zoomRead').onclick=()=>{sides.forEach(s=>{page(s).zoom=1;page(s).panX=0;page(s).panY=0;redraw(s)});updateZoom();save()};
