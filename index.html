@@ -81,12 +81,22 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
  .grip{width:15px;margin-right:1px}
  .size-pop,.floatbar.right .size-pop{width:190px}
 }
+
+/* Clean logo, Google Material Symbols and reliable floating popovers */
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(145deg,#6044b8,#8866dc);box-shadow:0 3px 10px #6541b833;display:grid;place-items:center;overflow:hidden}
+.logo-icon{font-size:24px!important;color:#fff;font-variation-settings:'FILL' 1}
+.tbtn .mi{font-size:23px;font-variation-settings:'FILL' 0}
+.tbtn.active .mi{font-variation-settings:'FILL' 1}
+.size-pop,.floatbar.right .size-pop{position:fixed!important;left:0;top:0;right:auto;bottom:auto;transform:none;z-index:250;width:220px;max-width:calc(100vw - 24px);display:none;pointer-events:auto}
+.size-pop.open{display:flex}
+#backgroundMenu{z-index:260}
+
 </style>
 </head>
 <body>
 <div id="app">
 <header>
- <div class="brand"><div class="logo" aria-label="Whiteboard logo"><span class="logo-board logo-board-back"></span><span class="logo-board logo-board-front"></span><span class="mi logo-pen">edit</span></div><span>Whiteboard</span></div>
+ <div class="brand"><div class="logo" aria-label="Whiteboard"><span class="mi logo-icon">draw</span></div><span>Whiteboard</span></div>
  <button class="project" id="projectName">Untitled board ▾</button>
  <div class="header-tools">
   <button class="headbtn" id="backgroundBtn">Background</button>
@@ -115,17 +125,17 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
  </section>
  <section class="pane" id="pane-right" hidden><span class="pane-label">WHITEBOARD 2</span><canvas id="canvas-right"></canvas>
   <div class="floatbar right" id="bar-right"><div class="grip" data-grip="right">•••</div>
-   <button class="tbtn active" data-side="right" data-tool="pen" title="Pen"><svg viewBox="0 0 24 24"><path d="m4 20 4-1 11-11a2 2 0 0 0-3-3L5 16z"/><path d="m14 6 4 4"/></svg></button>
-   <button class="tbtn" data-side="right" data-tool="highlighter" title="Highlighter"><svg viewBox="0 0 24 24"><path d="m4 15 10-10 6 6-10 10H4z"/><path d="M3 21h18"/></svg></button>
-   <button class="tbtn" data-side="right" data-tool="eraser" title="Eraser"><svg viewBox="0 0 24 24"><path d="m7 5 4-4 9 9-8 8-8-8z"/><path d="m11 18 3 3h7"/></svg></button>
-   <button class="tbtn" data-side="right" data-tool="ruler" title="Straight line"><svg viewBox="0 0 24 24"><path d="m3 17 14-14 4 4L7 21z"/><path d="m14 6 4 4M10 10l2 2M7 13l2 2"/></svg></button>
-   <button class="tbtn" data-side="right" data-tool="pan" title="Move canvas"><svg viewBox="0 0 24 24"><path d="M8 12V5a2 2 0 0 1 4 0v6-8a2 2 0 0 1 4 0v9-6a2 2 0 0 1 4 0v9c0 5-3 8-8 8h-1c-3 0-5-2-7-5l-2-3a2 2 0 0 1 3-2z"/></svg></button>
+   <button class="tbtn active" data-side="right" data-tool="pen" title="Pen"><span class="mi">edit</span></button>
+   <button class="tbtn" data-side="right" data-tool="highlighter" title="Highlighter"><span class="mi">highlighter</span></button>
+   <button class="tbtn" data-side="right" data-tool="eraser" title="Eraser"><span class="mi">ink_eraser</span></button>
+   <button class="tbtn" data-side="right" data-tool="ruler" title="Straight line"><span class="mi">straighten</span></button>
+   <button class="tbtn" data-side="right" data-tool="pan" title="Move canvas"><span class="mi">pan_tool</span></button>
    <div class="sep"></div><div class="palette" data-palette="right">
     <button class="swatch selected" data-color="#252333" style="background:#252333"></button><button class="swatch" data-color="#2563eb" style="background:#2563eb"></button><button class="swatch" data-color="#dc2626" style="background:#dc2626"></button><button class="swatch" data-color="#16a34a" style="background:#16a34a"></button><button class="swatch" data-color="#f59e0b" style="background:#f59e0b"></button><button class="swatch" data-color="#9333ea" style="background:#9333ea"></button>
    </div>
-   <button class="tbtn" data-side="right" data-action="size" title="Pen size"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-   <button class="tbtn" data-side="right" data-action="undo" title="Undo"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h9a7 7 0 0 1 0 14h-2"/></svg></button>
-   <button class="tbtn" data-side="right" data-action="clear" title="Clear drawings"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg></button>
+   <button class="tbtn" data-side="right" data-action="size" title="Pen size"><span class="mi">tune</span></button>
+   <button class="tbtn" data-side="right" data-action="undo" title="Undo"><span class="mi">undo</span></button>
+   <button class="tbtn" data-side="right" data-action="clear" title="Clear drawings"><span class="mi">delete</span></button>
    <div class="size-pop" id="size-right"><label>Pen thickness <span id="width-right">4</span></label><input type="range" min="1" max="28" value="4" data-width="right"><label>Eraser size <span id="erase-right">24</span></label><input type="range" min="8" max="80" value="24" data-erase="right"></div>
   </div>
  </section>
@@ -171,7 +181,20 @@ document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.data
 document.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{const s=b.closest('[data-palette]').dataset.palette;page(s).color=b.dataset.color;b.parentElement.querySelectorAll('.swatch').forEach(x=>x.classList.toggle('selected',x===b));save()});
 document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>{const s=b.dataset.side;if(b.dataset.action==='undo')undo(s);if(b.dataset.action==='clear'){clear(s);toast('Drawings cleared')}});
 function closePopups(except=null){
- document.querySelectorAll('.size-pop').forEach(p=>{if(p!==except)p.classList.remove('open')});
+ document.querySelectorAll('.size-pop').forEach(p=>{
+  if(p!==except){p.classList.remove('open');p.style.left='';p.style.top=''}
+ });
+ document.querySelectorAll('[data-action="size"]').forEach(b=>{
+  if(!except || b.dataset.side !== except.id.replace('size-','')) b.setAttribute('aria-expanded','false');
+ });
+}
+function placeSizePopup(side,pop){
+ const trigger=document.querySelector('[data-side="'+side+'"][data-action="size"]');
+ const r=trigger.getBoundingClientRect(),w=220,h=pop.offsetHeight||130;
+ const left=Math.max(12,Math.min(window.innerWidth-w-12,r.left+r.width/2-w/2));
+ const above=r.top-h-10;
+ const top=above>=10?above:Math.min(window.innerHeight-h-10,r.bottom+10);
+ pop.style.left=left+'px';pop.style.top=Math.max(10,top)+'px';
 }
 document.querySelectorAll('[data-action="size"]').forEach(b=>{
  b.setAttribute('aria-haspopup','true');
@@ -182,12 +205,16 @@ document.querySelectorAll('[data-action="size"]').forEach(b=>{
   closePopups(pop);
   pop.classList.toggle('open',willOpen);
   b.setAttribute('aria-expanded',String(willOpen));
+  if(willOpen) requestAnimationFrame(()=>placeSizePopup(s,pop));
  });
 });
 document.querySelectorAll('.size-pop').forEach(pop=>{
  pop.addEventListener('pointerdown',e=>e.stopPropagation());
  pop.addEventListener('click',e=>e.stopPropagation());
+ pop.addEventListener('input',e=>e.stopPropagation());
 });
+window.addEventListener('resize',()=>document.querySelectorAll('.size-pop.open').forEach(pop=>placeSizePopup(pop.id.replace('size-',''),pop)));
+window.addEventListener('scroll',()=>document.querySelectorAll('.size-pop.open').forEach(pop=>placeSizePopup(pop.id.replace('size-',''),pop)),true);
 document.addEventListener('pointerdown',e=>{
  if(!e.target.closest('.floatbar'))closePopups();
  if(!e.target.closest('#backgroundBtn')&&!e.target.closest('#backgroundMenu'))$('backgroundMenu').classList.remove('open');
