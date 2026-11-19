@@ -225,6 +225,27 @@ header{display:none!important}
  .dash-library-actions button{min-height:42px;white-space:nowrap}
  .folder-navigation{flex-wrap:wrap;gap:9px}
 }
+
+/* Custom whiteboard dialogs */
+.dialog-shade{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;background:#21172f66;backdrop-filter:blur(7px)}
+.dialog-shade.open{display:flex}
+.custom-dialog{width:min(430px,100%);padding:25px;border:1px solid #eee4f5;border-radius:24px;background:linear-gradient(145deg,#fff 0%,#fffaff 65%,#fff4eb 100%);box-shadow:0 24px 80px #20122f55;animation:dialog-in .18s ease-out}
+@keyframes dialog-in{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.dialog-kicker{font-size:10px;letter-spacing:.16em;font-weight:850;color:#9a62c9;text-transform:uppercase}
+.dialog-title{margin:8px 0 6px;font-size:23px;letter-spacing:-.035em;color:#30243d}
+.dialog-message{margin:0 0 18px;font-size:13px;line-height:1.55;color:#7c7288}
+.dialog-field{display:block;width:100%;height:48px;padding:0 14px;border:1px solid #e5dbea;border-radius:12px;background:#fff;color:#30243d;outline:none;font-size:14px}
+.dialog-field:focus{border-color:#a779db;box-shadow:0 0 0 4px #9b6ad51c}
+.dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:21px}
+.dialog-actions button{min-height:42px;padding:0 17px;border:1px solid #e8e0ee;border-radius:12px;background:#fff;color:#6b6177;font-size:13px;font-weight:700}
+.dialog-actions .dialog-primary{border:0;background:linear-gradient(110deg,#6541b8,#9b5bd2,#e16b9b);color:#fff;box-shadow:0 5px 14px #8754bc30}
+.dialog-actions .dialog-danger{background:linear-gradient(110deg,#e05268,#ed8755);color:#fff;border:0}
+.dialog-error{min-height:16px;margin-top:7px;color:#c64259;font-size:11px}
+#app:fullscreen{background:#fff}
+#app:fullscreen .bottom{bottom:12px}
+#app:fullscreen .control-dock{top:16px}
+.fullscreen-btn{display:flex;align-items:center;justify-content:center;gap:9px}
+@media(max-width:520px){.custom-dialog{padding:21px;border-radius:20px}.dialog-title{font-size:21px}}
 </style>
 </head>
 <body>
@@ -237,6 +258,7 @@ header{display:none!important}
   <div class="dock-zoom"><button class="headbtn" id="zoomOut">−</button><button class="headbtn" id="zoomRead">100%</button><button class="headbtn" id="zoomIn">＋</button></div>
   <button class="headbtn" id="dashboardBtn"><span class="mi">dashboard</span> Files</button>
   <button class="headbtn view-switch" id="splitBtn" title="Switch to split view"><span class="mi">splitscreen</span> Split view</button>
+  <button class="headbtn fullscreen-btn" id="fullscreenBtn"><span class="mi">fullscreen</span> Full screen</button>
   <button class="headbtn" id="exportBtn"><span class="mi">open_in_new</span> Export</button>
   <button class="headbtn primary" id="saveBtn"><span class="mi">save</span> Save</button>
  </div>
@@ -285,6 +307,7 @@ header{display:none!important}
  <div class="page-actions"><button class="pagebtn" id="prev">‹</button><button class="pagebtn add" id="add">＋</button><button class="pagebtn" id="next">›</button></div>
  <div class="pages" id="pages"></div><span class="pageright" id="pageCount">Page 1 of 1</span>
 </footer>
+<div class="dialog-shade" id="dialogShade" aria-hidden="true"><section class="custom-dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div class="dialog-kicker">ROHAN’S WHITEBOARD</div><h2 class="dialog-title" id="dialogTitle">Name this folder</h2><p class="dialog-message" id="dialogMessage"></p><div id="dialogControl"></div><div class="dialog-error" id="dialogError"></div><div class="dialog-actions"><button type="button" id="dialogCancel">Cancel</button><button type="button" class="dialog-primary" id="dialogConfirm">Continue</button></div></section></div>
 <div class="toast" id="toast"></div>
 </div>
 <script>
@@ -417,6 +440,10 @@ function setupRuler(s){
 }
 sides.forEach(setupRuler);
 $('splitBtn').onclick=()=>setSplit(!split);
+function updateFullscreenButton(){const active=!!document.fullscreenElement;const b=$('fullscreenBtn');if(!b)return;b.innerHTML='<span class="mi">'+(active?'fullscreen_exit':'fullscreen')+'</span> '+(active?'Exit full screen':'Full screen')}
+$('fullscreenBtn').onclick=async()=>{try{if(!document.fullscreenElement){const target=$('app');if(target.requestFullscreen)await target.requestFullscreen();else if(target.webkitRequestFullscreen)target.webkitRequestFullscreen();else{toast('Full screen is not supported in this browser');return}}else{if(document.exitFullscreen)await document.exitFullscreen();else if(document.webkitExitFullscreen)document.webkitExitFullscreen()} }catch(e){toast('Full screen was blocked by the browser')}};
+document.addEventListener('fullscreenchange',updateFullscreenButton);updateFullscreenButton();
+
 
 const dock=$('controlDock'),orb=$('dockOrb'),dockPanel=$('dockPanel');
 let dockDrag=null,dockMoved=false;
@@ -480,10 +507,30 @@ function renderLibrary(){
 }
 function openFile(id){const f=library.find(x=>x.id===id&&x.kind==='board');if(!f)return;syncActiveFile();activeFileId=id;sides.forEach(s=>{state[s]=clone(f.data.state[s]||{pages:[fresh()],index:0})});split=!!f.data.split;closeDashboard();$('projectName').textContent=f.name+' ▾';setSplit(split);sides.forEach(s=>{const p=page(s);$('width-'+s).textContent=p.width;$('erase-'+s).textContent=p.eraser;setTool(s,p.tool)});renderPages();updateZoom();save();toast('Opened '+f.name)}
 function createBoard(){syncActiveFile();const f={id:makeId(),kind:'board',name:'Untitled whiteboard',folderId:null,updated:Date.now(),data:{state:{left:{pages:[fresh()],index:0},right:{pages:[fresh()],index:0}},split:false}};library.push(f);activeFileId=f.id;sides.forEach(s=>{state[s]=clone(f.data.state[s])});split=false;$('projectName').textContent=f.name+' ▾';setSplit(false);sides.forEach(redraw);renderPages();updateZoom();save();closeDashboard();toast('New whiteboard created')}
-function renameFile(id){const f=library.find(x=>x.id===id);if(!f)return;const n=prompt('Enter a new name',f.name);if(!n||!n.trim())return;f.name=n.trim();if(id===activeFileId)$('projectName').textContent=f.name+' ▾';save();renderLibrary()}
-function moveFile(id){const f=library.find(x=>x.id===id&&x.kind==='board');if(!f)return;const folders=library.filter(x=>x.kind==='folder');if(!folders.length){toast('Create a folder first');return}const choices=['No folder',...folders.map(x=>x.name)];const pick=prompt('Choose destination number:\n'+choices.map((x,i)=>(i+1)+'. '+x).join('\n'),'1');if(pick===null)return;const n=Number(pick);if(!Number.isInteger(n)||n<1||n>choices.length)return toast('Invalid folder number');f.folderId=n===1?null:folders[n-2].id;save();renderLibrary()}
-function deleteFile(id){const f=library.find(x=>x.id===id);if(!f||!confirm('Delete '+f.name+'?'))return;if(f.kind==='folder')library.filter(x=>x.kind==='board'&&x.folderId===id).forEach(b=>b.folderId=null);library=library.filter(x=>x.id!==id);if(id===activeFileId){const next=library.find(x=>x.kind==='board');if(next){activeFileId=next.id;const data=next.data.state;sides.forEach(s=>state[s]=clone(data[s]||{pages:[fresh()],index:0}));split=!!next.data.split;$('projectName').textContent=next.name+' ▾';setSplit(split);renderPages();updateZoom()}else{createBoard()}}save();renderLibrary()}
-$('addFolder').onclick=()=>{const n=prompt('Name this folder');if(!n||!n.trim())return;library.push({id:makeId(),kind:'folder',name:n.trim(),updated:Date.now()});save();renderLibrary()};
+function dialog(options={}){
+ return new Promise(resolve=>{
+  const shade=$('dialogShade'),title=$('dialogTitle'),message=$('dialogMessage'),control=$('dialogControl'),error=$('dialogError'),ok=$('dialogConfirm'),cancel=$('dialogCancel');
+  title.textContent=options.title||'Whiteboard';message.textContent=options.message||'';control.innerHTML='';error.textContent='';ok.textContent=options.confirmText||'Continue';ok.className='dialog-primary'+(options.danger?' dialog-danger':'');
+  let field=null;
+  if(options.type==='select'){
+   field=document.createElement('select');field.className='dialog-field';
+   (options.options||[]).forEach((item,i)=>{const op=document.createElement('option');op.value=item.value;op.textContent=item.label;field.append(op);if(item.value===options.value)field.value=item.value});
+  }else if(options.type==='input'){
+   field=document.createElement('input');field.className='dialog-field';field.type='text';field.value=options.value||'';field.placeholder=options.placeholder||'';field.maxLength=90;
+  }
+  if(field)control.append(field);
+  shade.classList.add('open');shade.setAttribute('aria-hidden','false');
+  const finish=value=>{shade.classList.remove('open');shade.setAttribute('aria-hidden','true');ok.onclick=null;cancel.onclick=null;shade.onclick=null;document.removeEventListener('keydown',key);resolve(value)};
+  const key=e=>{if(e.key==='Escape'){e.preventDefault();finish(null)}if(e.key==='Enter'&&options.type!=='confirm'){e.preventDefault();ok.click()}};
+  ok.onclick=()=>{const value=field?field.value:true;if(options.required&&(!String(value).trim())){error.textContent='Please enter a name to continue.';field.focus();return}finish(value)};
+  cancel.onclick=()=>finish(null);shade.onclick=e=>{if(e.target===shade)finish(null)};document.addEventListener('keydown',key);
+  if(field){field.focus();if(field.select)field.select()}else ok.focus();
+ });
+}
+async function renameFile(id){const f=library.find(x=>x.id===id);if(!f)return;const n=await dialog({type:'input',title:'Rename '+(f.kind==='folder'?'folder':'whiteboard'),message:'Choose a clear name for this '+f.kind+'.',value:f.name,confirmText:'Save name',required:true});if(n===null||!n.trim())return;f.name=n.trim();if(id===activeFileId)$('projectName').textContent=f.name+' ▾';save();renderLibrary()}
+async function moveFile(id){const f=library.find(x=>x.id===id&&x.kind==='board');if(!f)return;const folders=library.filter(x=>x.kind==='folder');const choices=[{value:'',label:'No folder (all files)'},...folders.map(x=>({value:x.id,label:x.name}))];const pick=await dialog({type:'select',title:'Move whiteboard',message:'Choose where you want to organise “'+f.name+'”.',options:choices,value:f.folderId||'',confirmText:'Move'});if(pick===null)return;f.folderId=pick||null;save();renderLibrary();toast('Whiteboard moved')}
+async function deleteFile(id){const f=library.find(x=>x.id===id);if(!f)return;const yes=await dialog({type:'confirm',title:'Delete '+(f.kind==='folder'?'folder':'whiteboard')+'?',message:'“'+f.name+'” will be deleted. '+(f.kind==='folder'?'Whiteboards inside will be moved back to All files.':'This cannot be undone.'),confirmText:'Delete',danger:true});if(!yes)return;if(f.kind==='folder')library.filter(x=>x.kind==='board'&&x.folderId===id).forEach(b=>b.folderId=null);library=library.filter(x=>x.id!==id);if(id===activeFileId){const next=library.find(x=>x.kind==='board');if(next){activeFileId=next.id;const data=next.data.state;sides.forEach(s=>state[s]=clone(data[s]||{pages:[fresh()],index:0}));split=!!next.data.split;$('projectName').textContent=next.name+' ▾';setSplit(split);renderPages();updateZoom()}else{createBoard()}}save();renderLibrary()}
+$('addFolder').onclick=async()=>{const n=await dialog({type:'input',title:'Create a folder',message:'Give your folder a name so you can organise your whiteboards.',placeholder:'e.g. Science projects',confirmText:'Create folder',required:true});if(n===null||!n.trim())return;library.push({id:makeId(),kind:'folder',name:n.trim(),updated:Date.now()});save();renderLibrary()};
 $('newBoardFile').onclick=createBoard;$('newBoard').onclick=createBoard;
 $('dashboardSplit').onclick=()=>{setSplit(true);closeDashboard()};
 $('newBoard').onclick=createBoard;$('zoomIn').onclick=()=>zoom(1.2);$('zoomOut').onclick=()=>zoom(1/1.2);$('zoomRead').onclick=()=>{sides.forEach(s=>{page(s).zoom=1;page(s).panX=0;page(s).panY=0;redraw(s)});updateZoom();save()};
