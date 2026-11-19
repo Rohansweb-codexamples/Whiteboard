@@ -188,6 +188,9 @@ header{display:none!important}
 .dashboard{inset:0!important}
 @media(max-width:650px){.control-dock{top:9px;right:9px}.dock-orb{width:44px;height:44px}.dock-panel{min-width:230px}.bottom{bottom:7px}.floatbar,.floatbar.right{top:50%;}}
 
+
+/* File-library drag and drop feedback */
+.library-row[draggable="true"]{cursor:grab}.library-row.is-dragging{opacity:.4}.library-row.folder.drop-target{background:linear-gradient(100deg,#fff1e4,#f1eaff);outline:2px dashed #a879df;outline-offset:-4px}.library-row.folder{transition:background .15s,outline .15s}
 </style>
 </head>
 <body>
@@ -397,9 +400,15 @@ function renderLibrary(){
  const folders=library.filter(f=>f.kind==='folder'),boards=library.filter(f=>f.kind==='board');
  function row(f){const r=document.createElement('div');r.className='library-row'+(f.kind==='folder'?' folder':'');
  const glyph=document.createElement('span');glyph.className='file-glyph';glyph.innerHTML='<span class="mi">'+(f.kind==='folder'?'folder':'description')+'</span>';
- const meta=document.createElement('div');meta.className='file-meta';const title=document.createElement('strong');title.textContent=f.name;const sub=document.createElement('small');sub.textContent=f.kind==='folder'?boards.filter(b=>b.folderId===f.id).length+' whiteboards':(f.data?.state?.left?.pages?.length||1)+' pages';meta.append(title,sub);
+ const meta=document.createElement('div');meta.className='file-meta';const title=document.createElement('strong');title.textContent=f.name;const sub=document.createElement('small');sub.textContent=f.kind==='folder'?boards.filter(b=>b.folderId===f.id).length+' whiteboards · drop files here':(f.data?.state?.left?.pages?.length||1)+' pages · drag into a folder';meta.append(title,sub);
  const actions=document.createElement('div');actions.className='file-actions';
- function act(label,icon,fn){const b=document.createElement('button');b.className='file-action';b.title=label;b.innerHTML='<span class="mi">'+icon+'</span>';b.onclick=fn;actions.append(b)}
+ function act(label,icon,fn){const b=document.createElement('button');b.className='file-action';b.title=label;b.innerHTML='<span class="mi">'+icon+'</span>';b.onclick=e=>{e.stopPropagation();fn()};actions.append(b)}
+ if(f.kind==='board'){r.draggable=true;r.addEventListener('dragstart',e=>{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',f.id);r.classList.add('is-dragging')});r.addEventListener('dragend',()=>r.classList.remove('is-dragging'));r.addEventListener('dblclick',()=>openFile(f.id))}
+ if(f.kind==='folder'){
+  r.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';r.classList.add('drop-target')});
+  r.addEventListener('dragleave',e=>{if(!r.contains(e.relatedTarget))r.classList.remove('drop-target')});
+  r.addEventListener('drop',e=>{e.preventDefault();r.classList.remove('drop-target');const id=e.dataTransfer.getData('text/plain');const board=library.find(x=>x.id===id&&x.kind==='board');if(!board)return;board.folderId=f.id;save();renderLibrary();toast('Moved '+board.name+' into '+f.name)});
+ }
  if(f.kind==='board')act('Open','open_in_new',()=>openFile(f.id));
  act('Rename','drive_file_rename_outline',()=>renameFile(f.id));
  if(f.kind==='board')act('Move to folder','folder',()=>moveFile(f.id));
