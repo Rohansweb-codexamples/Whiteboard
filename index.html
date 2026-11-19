@@ -191,6 +191,13 @@ header{display:none!important}
 
 /* File-library drag and drop feedback */
 .library-row[draggable="true"]{cursor:grab}.library-row.is-dragging{opacity:.4}.library-row.folder.drop-target{background:linear-gradient(100deg,#fff1e4,#f1eaff);outline:2px dashed #a879df;outline-offset:-4px}.library-row.folder{transition:background .15s,outline .15s}
+
+.library-hint{font-size:12px;color:#777181;padding:5px 2px 12px}
+.folder-navigation{display:flex;align-items:center;gap:13px;padding:3px 0 14px;color:#453b55}
+.folder-navigation strong{display:flex;align-items:center;gap:7px;font-size:14px}
+.folder-back{border:1px solid #e8e0ee;background:#fff;border-radius:10px;padding:8px 11px;color:#655477;display:flex;align-items:center;gap:6px;cursor:pointer}
+.library-row.folder-clickable{cursor:pointer}
+.library-row.folder-clickable:hover{background:#faf5ff}
 </style>
 </head>
 <body>
@@ -395,27 +402,54 @@ document.addEventListener('pointerdown',e=>{if(!e.target.closest('#controlDock')
 function openDashboard(){$('dashboard').hidden=false;$('dashboard').classList.add('is-open');renderLibrary();}
 function closeDashboard(){$('dashboard').hidden=true;$('dashboard').classList.remove('is-open');}
 $('dashboardBtn').onclick=openDashboard;$('dashboardClose').onclick=closeDashboard;$('continueBoard').onclick=closeDashboard;
+let openedFolderId=null;
 function renderLibrary(){
  const el=$('libraryList');if(!el)return;el.innerHTML='';
  const folders=library.filter(f=>f.kind==='folder'),boards=library.filter(f=>f.kind==='board');
- function row(f){const r=document.createElement('div');r.className='library-row'+(f.kind==='folder'?' folder':'');
- const glyph=document.createElement('span');glyph.className='file-glyph';glyph.innerHTML='<span class="mi">'+(f.kind==='folder'?'folder':'description')+'</span>';
- const meta=document.createElement('div');meta.className='file-meta';const title=document.createElement('strong');title.textContent=f.name;const sub=document.createElement('small');sub.textContent=f.kind==='folder'?boards.filter(b=>b.folderId===f.id).length+' whiteboards · drop files here':(f.data?.state?.left?.pages?.length||1)+' pages · drag into a folder';meta.append(title,sub);
- const actions=document.createElement('div');actions.className='file-actions';
- function act(label,icon,fn){const b=document.createElement('button');b.className='file-action';b.title=label;b.innerHTML='<span class="mi">'+icon+'</span>';b.onclick=e=>{e.stopPropagation();fn()};actions.append(b)}
- if(f.kind==='board'){r.draggable=true;r.addEventListener('dragstart',e=>{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',f.id);r.classList.add('is-dragging')});r.addEventListener('dragend',()=>r.classList.remove('is-dragging'));r.addEventListener('dblclick',()=>openFile(f.id))}
- if(f.kind==='folder'){
-  r.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';r.classList.add('drop-target')});
-  r.addEventListener('dragleave',e=>{if(!r.contains(e.relatedTarget))r.classList.remove('drop-target')});
-  r.addEventListener('drop',e=>{e.preventDefault();r.classList.remove('drop-target');const id=e.dataTransfer.getData('text/plain');const board=library.find(x=>x.id===id&&x.kind==='board');if(!board)return;board.folderId=f.id;save();renderLibrary();toast('Moved '+board.name+' into '+f.name)});
+ const opened=openedFolderId?folders.find(f=>f.id===openedFolderId):null;
+ if(openedFolderId&&!opened)openedFolderId=null;
+ if(opened){
+  const nav=document.createElement('div');nav.className='folder-navigation';
+  const back=document.createElement('button');back.className='folder-back';back.innerHTML='<span class="mi">arrow_back</span> All files';back.onclick=()=>{openedFolderId=null;renderLibrary()};
+  const heading=document.createElement('strong');heading.innerHTML='<span class="mi">folder_open</span> '+escapeHtml(opened.name);
+  nav.append(back,heading);el.append(nav);
+ }else{
+  const hint=document.createElement('div');hint.className='library-hint';hint.textContent='Open a folder to see the whiteboards inside. Drag whiteboards onto folders to organise them.';el.append(hint);
  }
- if(f.kind==='board')act('Open','open_in_new',()=>openFile(f.id));
- act('Rename','drive_file_rename_outline',()=>renameFile(f.id));
- if(f.kind==='board')act('Move to folder','folder',()=>moveFile(f.id));
- act('Delete','delete',()=>deleteFile(f.id));r.append(glyph,meta,actions);el.append(r)}
- folders.forEach(row);boards.filter(b=>!b.folderId||!folders.some(f=>f.id===b.folderId)).forEach(row);
- folders.forEach(f=>boards.filter(b=>b.folderId===f.id).forEach(row));
- if(!el.children.length)el.innerHTML='<div class="library-empty">No files yet. Create a whiteboard to get started.</div>';
+ function row(f){
+  const r=document.createElement('div');r.className='library-row'+(f.kind==='folder'?' folder':'');
+  const glyph=document.createElement('span');glyph.className='file-glyph';glyph.innerHTML='<span class="mi">'+(f.kind==='folder'?'folder':'description')+'</span>';
+  const meta=document.createElement('div');meta.className='file-meta';const title=document.createElement('strong');title.textContent=f.name;const sub=document.createElement('small');sub.textContent=f.kind==='folder'?boards.filter(b=>b.folderId===f.id).length+' whiteboards':(f.data?.state?.left?.pages?.length||1)+' pages';meta.append(title,sub);
+  const actions=document.createElement('div');actions.className='file-actions';
+  function act(label,icon,fn){const b=document.createElement('button');b.className='file-action';b.title=label;b.setAttribute('aria-label',label);b.innerHTML='<span class="mi">'+icon+'</span>';b.onclick=e=>{e.stopPropagation();fn()};actions.append(b)}
+  if(f.kind==='board'){
+   r.draggable=true;r.addEventListener('dragstart',e=>{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',f.id);r.classList.add('is-dragging')});r.addEventListener('dragend',()=>r.classList.remove('is-dragging'));
+   r.addEventListener('dblclick',()=>openFile(f.id));
+  }
+  if(f.kind==='folder'){
+   const open=()=>{openedFolderId=f.id;renderLibrary()};
+   r.classList.add('folder-clickable');r.addEventListener('click',e=>{if(!e.target.closest('button'))open()});r.addEventListener('dblclick',open);
+   r.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';r.classList.add('drop-target')});
+   r.addEventListener('dragleave',e=>{if(!r.contains(e.relatedTarget))r.classList.remove('drop-target')});
+   r.addEventListener('drop',e=>{e.preventDefault();r.classList.remove('drop-target');const id=e.dataTransfer.getData('text/plain');const board=library.find(x=>x.id===id&&x.kind==='board');if(!board)return;board.folderId=f.id;save();renderLibrary();toast('Moved '+board.name+' into '+f.name)});
+   act('Open folder','folder_open',open);
+  }else{
+   act('Open','open_in_new',()=>openFile(f.id));
+   act('Move to folder','drive_file_move',()=>moveFile(f.id));
+  }
+  act('Rename','drive_file_rename_outline',()=>renameFile(f.id));
+  act('Delete','delete',()=>deleteFile(f.id));
+  r.append(glyph,meta,actions);el.append(r);
+ }
+ if(opened){
+  const inside=boards.filter(b=>b.folderId===opened.id);
+  inside.forEach(row);
+  if(!inside.length){const empty=document.createElement('div');empty.className='library-empty';empty.textContent='This folder is empty. Drag a whiteboard here or move one into this folder.';el.append(empty)}
+ }else{
+  folders.forEach(row);
+  boards.filter(b=>!b.folderId||!folders.some(f=>f.id===b.folderId)).forEach(row);
+  if(!folders.length&&!boards.length)el.innerHTML='<div class="library-empty">No files yet. Create a whiteboard to get started.</div>';
+ }
 }
 function openFile(id){const f=library.find(x=>x.id===id&&x.kind==='board');if(!f)return;syncActiveFile();activeFileId=id;sides.forEach(s=>{state[s]=clone(f.data.state[s]||{pages:[fresh()],index:0})});split=!!f.data.split;closeDashboard();$('projectName').textContent=f.name+' ▾';setSplit(split);sides.forEach(s=>{const p=page(s);$('width-'+s).textContent=p.width;$('erase-'+s).textContent=p.eraser;setTool(s,p.tool)});renderPages();updateZoom();save();toast('Opened '+f.name)}
 function createBoard(){syncActiveFile();const f={id:makeId(),kind:'board',name:'Untitled whiteboard',folderId:null,updated:Date.now(),data:{state:{left:{pages:[fresh()],index:0},right:{pages:[fresh()],index:0}},split:false}};library.push(f);activeFileId=f.id;sides.forEach(s=>{state[s]=clone(f.data.state[s])});split=false;$('projectName').textContent=f.name+' ▾';setSplit(false);sides.forEach(redraw);renderPages();updateZoom();save();closeDashboard();toast('New whiteboard created')}
