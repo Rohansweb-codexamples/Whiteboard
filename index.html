@@ -161,21 +161,49 @@ header{background:transparent;border-bottom:0;padding:8px 18px;gap:12px}
  .header-tools .headbtn{padding:6px 7px;font-size:10px}
 }
 
+
+/* Full-canvas whiteboard with a single draggable radial control dock */
+html,body,#app{background:#fff}
+#app{position:relative}
+#workspace{position:absolute;inset:0;padding:0!important;margin:0!important;gap:0!important;background:#fff}
+.pane{border:0!important;border-radius:0!important}
+#pane-right{border-left:2px dotted #d7d1df!important}
+#workspace.is-split{padding:0!important}
+#workspace.is-split::after{display:none}
+header{display:none!important}
+.bottom{position:fixed;z-index:25;left:50%;bottom:9px;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 24px);height:44px;padding:4px 9px;border:1px solid #e9e4ef;border-radius:16px;background:#ffffffdf;backdrop-filter:blur(14px);box-shadow:0 5px 22px #2c21421c;gap:7px}
+.pagebtn{height:30px;min-width:30px}.pagechip{height:31px;min-width:36px}
+.control-dock{position:fixed;z-index:230;top:13px;right:14px;display:flex;align-items:flex-start;justify-content:flex-end;touch-action:none}
+.dock-orb{width:48px;height:48px;flex:none;border:0;border-radius:50%;display:grid;place-items:center;color:white;background:linear-gradient(135deg,#ff9d42 0%,#ed6395 48%,#7552d5 100%);box-shadow:0 5px 20px #9b5bd64a,0 0 0 5px #ffffffc9;cursor:grab;touch-action:none;user-select:none}
+.dock-orb:active{cursor:grabbing}.dock-orb .mi{font-size:23px}
+.dock-panel{position:absolute;top:0;right:0;display:none;min-width:250px;padding:60px 12px 12px;border:1px solid #eadff2;border-radius:25px;background:linear-gradient(145deg,#fff9f1f5,#fbf5fff5 55%,#f1f8fff5);box-shadow:0 12px 38px #30213d2b;backdrop-filter:blur(18px);gap:7px;flex-direction:column;transform-origin:top right;animation:dock-pop .18s ease-out}
+.control-dock.open .dock-panel{display:flex}
+.control-dock.open .dock-orb{position:relative;z-index:2}
+@keyframes dock-pop{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+.dock-panel .headbtn{width:100%;min-height:39px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:13px;background:#ffffffdc;font-size:12px}
+.dock-panel .headbtn .mi{font-size:18px}
+.dock-panel .dock-name{width:100%;padding:8px 10px;border:0;border-radius:10px;background:transparent;text-align:left;font-weight:750;color:#3c3448}
+.dock-zoom{display:flex;gap:6px}.dock-zoom .headbtn{flex:1}
+#backgroundMenu{position:fixed;z-index:260}
+.dashboard{inset:0!important}
+@media(max-width:650px){.control-dock{top:9px;right:9px}.dock-orb{width:44px;height:44px}.dock-panel{min-width:230px}.bottom{bottom:7px}.floatbar,.floatbar.right{top:50%;}}
+
 </style>
 </head>
 <body>
 <div id="app">
-<header>
- <div class="brand"><div class="logo" aria-label="Whiteboard"><span class="mi logo-icon">draw</span></div><span>Whiteboard</span></div>
- <button class="project" id="projectName">Untitled board ▾</button>
- <div class="header-tools">
-  <button class="headbtn" id="backgroundBtn">Background</button>
-  <button class="headbtn" id="zoomOut">−</button><button class="headbtn" id="zoomRead">100%</button><button class="headbtn" id="zoomIn">＋</button>
-  <button class="headbtn" id="dashboardBtn"><span class="mi">dashboard</span> Dashboard</button><button class="headbtn view-switch" id="splitBtn" title="Switch to split view"><span class="mi">splitscreen</span> Split view</button>
-  <button class="headbtn" id="exportBtn">Export</button>
-  <button class="headbtn primary" id="saveBtn">Save</button>
+<div class="control-dock" id="controlDock">
+ <button class="dock-orb" id="dockOrb" aria-label="Open whiteboard controls" aria-expanded="false"><span class="mi">tune</span></button>
+ <div class="dock-panel" id="dockPanel" aria-hidden="true">
+  <button class="dock-name" id="projectName">Untitled board ▾</button>
+  <button class="headbtn" id="backgroundBtn"><span class="mi">palette</span> Background</button>
+  <div class="dock-zoom"><button class="headbtn" id="zoomOut">−</button><button class="headbtn" id="zoomRead">100%</button><button class="headbtn" id="zoomIn">＋</button></div>
+  <button class="headbtn" id="dashboardBtn"><span class="mi">dashboard</span> Files</button>
+  <button class="headbtn view-switch" id="splitBtn" title="Switch to split view"><span class="mi">splitscreen</span> Split view</button>
+  <button class="headbtn" id="exportBtn"><span class="mi">ios_share</span> Export</button>
+  <button class="headbtn primary" id="saveBtn"><span class="mi">save</span> Save</button>
  </div>
-</header>
+</div>
 <main id="workspace">
  <section class="pane" id="pane-left"><span class="pane-label">WHITEBOARD 1</span><canvas id="canvas-left"></canvas><div class="ruler-overlay" id="ruler-left"><div class="ruler-grip">••••••</div><div class="ruler-edge" title="Drag along this edge to draw a straight line"></div></div>
   <div class="floatbar" id="bar-left"><div class="grip" data-grip="left">•••</div>
@@ -307,7 +335,7 @@ document.addEventListener('pointerdown',e=>{
  if(!e.target.closest('#backgroundBtn')&&!e.target.closest('#backgroundMenu'))$('backgroundMenu').classList.remove('open');
 });
 document.addEventListener('keydown',e=>{
- if(e.key==='Escape'){closePopups();$('backgroundMenu').classList.remove('open')}
+ if(e.key==='Escape'){closePopups();$('backgroundMenu').classList.remove('open');dock.classList.remove('open');orb.setAttribute('aria-expanded','false')}
 });
 document.querySelectorAll('[data-width]').forEach(i=>i.oninput=()=>{const s=i.dataset.width;page(s).width=+i.value;$('width-'+s).textContent=i.value;save()});
 document.querySelectorAll('[data-erase]').forEach(i=>i.oninput=()=>{const s=i.dataset.erase;page(s).eraser=+i.value;$('erase-'+s).textContent=i.value;save()});
@@ -352,6 +380,15 @@ function setupRuler(s){
 }
 sides.forEach(setupRuler);
 $('splitBtn').onclick=()=>setSplit(!split);
+
+const dock=$('controlDock'),orb=$('dockOrb'),dockPanel=$('dockPanel');
+let dockDrag=null,dockMoved=false;
+orb.addEventListener('pointerdown',e=>{const r=dock.getBoundingClientRect();dockDrag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top,x:e.clientX,y:e.clientY};dockMoved=false;orb.setPointerCapture(e.pointerId);e.preventDefault()});
+orb.addEventListener('pointermove',e=>{if(!dockDrag||dockDrag.id!==e.pointerId)return;const dx=e.clientX-dockDrag.x,dy=e.clientY-dockDrag.y;if(Math.abs(dx)+Math.abs(dy)>5)dockMoved=true;if(dockMoved){const x=Math.max(4,Math.min(innerWidth-dock.offsetWidth-4,e.clientX-dockDrag.dx));const y=Math.max(4,Math.min(innerHeight-orb.offsetHeight-4,e.clientY-dockDrag.dy));dock.style.left=x+'px';dock.style.top=y+'px';dock.style.right='auto';dock.style.bottom='auto';e.preventDefault()}});
+function releaseDock(e){if(!dockDrag||dockDrag.id!==e.pointerId)return;dockDrag=null;if(!dockMoved){const open=!dock.classList.contains('open');dock.classList.toggle('open',open);orb.setAttribute('aria-expanded',String(open));dockPanel.setAttribute('aria-hidden',String(!open))}}
+['pointerup','pointercancel','lostpointercapture'].forEach(n=>orb.addEventListener(n,releaseDock));
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('#controlDock')){dock.classList.remove('open');orb.setAttribute('aria-expanded','false');dockPanel.setAttribute('aria-hidden','true')}});
+
 function openDashboard(){$('dashboard').hidden=false;$('dashboard').classList.add('is-open');renderLibrary();}
 function closeDashboard(){$('dashboard').hidden=true;$('dashboard').classList.remove('is-open');}
 $('dashboardBtn').onclick=openDashboard;$('dashboardClose').onclick=closeDashboard;$('continueBoard').onclick=closeDashboard;
