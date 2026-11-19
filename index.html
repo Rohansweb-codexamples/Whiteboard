@@ -101,7 +101,7 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
 #workspace.is-split{gap:0;padding:6px 10px}
 #workspace.is-split::after{content:"";position:absolute;z-index:4;pointer-events:none;top:12px;bottom:12px;left:50%;border-left:2px dotted #bdb5ca;transform:translateX(-1px)}
 .view-switch{display:flex;align-items:center;gap:6px;background:#faf9fc;color:#756d80;border-style:dashed;padding:7px 10px}.view-switch .mi{font-size:17px}
-#dashboard{display:none}#dashboard.is-open{display:block}.dashboard{position:fixed;inset:58px 0 55px;z-index:180;background:#f7f5fa;padding:clamp(18px,4vw,48px);overflow:auto}
+#dashboard{display:none!important}#dashboard.is-open{display:block!important}.dashboard{position:fixed;inset:58px 0 55px;z-index:180;background:#f7f5fa;padding:clamp(18px,4vw,48px);overflow:auto}
 .dash-top{max-width:1050px;margin:0 auto 28px;display:flex;justify-content:space-between;align-items:flex-start}
 .dash-kicker{font-size:10px;letter-spacing:.16em;font-weight:800;color:#8667c4;margin-bottom:9px}
 .dash-top h1{font-size:clamp(27px,4vw,40px);letter-spacing:-.04em;margin:0;color:#292438}
@@ -281,7 +281,7 @@ $('exportBtn').onclick=()=>{const s='left',a=document.createElement('a');a.downl
 $('projectName').onclick=()=>{const name=prompt('Name this whiteboard project','Untitled board');if(name){$('projectName').textContent=name+' ▾';localStorage.setItem(KEY+'-name',name)}};
 load();const savedName=localStorage.getItem(KEY+'-name');if(savedName)$('projectName').textContent=savedName+' ▾';
 sides.forEach(s=>{const p=page(s);$('width-'+s).textContent=p.width;$('erase-'+s).textContent=p.eraser;document.querySelector('[data-width="'+s+'"]').value=p.width;document.querySelector('[data-erase="'+s+'"]').value=p.eraser;document.querySelectorAll('[data-palette="'+s+'"] .swatch').forEach(b=>b.classList.toggle('selected',b.dataset.color===p.color));setTool(s,p.tool)});
-setSplit(split);requestAnimationFrame(()=>sides.forEach(resize));renderPages();updateZoom();
+closeDashboard();setSplit(split);requestAnimationFrame(()=>sides.forEach(resize));renderPages();updateZoom();
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('dashboard').hidden){closeDashboard();return}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo('left')}if(e.key==='Escape')document.querySelectorAll('.size-pop').forEach(x=>x.classList.remove('open'))});
 })();
 </script>
