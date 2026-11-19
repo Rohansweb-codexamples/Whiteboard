@@ -441,7 +441,7 @@ function renderLibrary(){
   const heading=document.createElement('strong');const folderIcon=document.createElement('span');folderIcon.className='mi';folderIcon.textContent='folder_open';heading.append(folderIcon,document.createTextNode(opened.name));
   nav.append(back,heading);el.append(nav);
  }else{
-  const hint=document.createElement('div');hint.className='library-hint';hint.textContent='Open a folder to see the whiteboards inside. Drag whiteboards onto folders to organise them.';el.append(hint);
+  const hint=document.createElement('div');hint.className='library-hint';hint.textContent='';hint.hidden=true;el.append(hint);
  }
  function row(f){
   const r=document.createElement('div');r.className='library-row'+(f.kind==='folder'?' folder':'');
