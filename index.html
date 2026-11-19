@@ -33,10 +33,10 @@
 
     <!-- GLOBAL APBAR CONTROL HEADER -->
     <div class="absolute top-6 left-6 bg-white/80 backdrop-blur-xl shadow-lg shadow-slate-100 rounded-2xl p-1.5 flex items-center gap-1.5 border border-white/60 z-50 transition-all duration-300">
-        <button id="mode-single" class="px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-95" title="Full Screen Canvas Mode">
+        <button id="mode-single" class="px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-200 text-slate-600 hover:bg-slate-100/80 active:scale-95" title="Full Screen Canvas Mode">
             Single View
         </button>
-        <button id="mode-split" class="px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-200 text-slate-600 hover:bg-slate-100/80 active:scale-95" title="Split Screen Dual Mode">
+        <button id="mode-split" class="px-4 py-2 rounded-xl text-xs font-bold tracking-wide uppercase transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-100 active:scale-95" title="Split Screen Dual Mode">
             Split Screen
         </button>
     </div>
@@ -75,7 +75,7 @@
     </div>
 
     <!-- LEFT WORKSPACE CANVAS DIVISION -->
-    <div id="pane-left" class="w-full h-full relative bg-white grid-bg transition-all duration-300 ease-in-out flex flex-col">
+    <div id="pane-left" class="w-1/2 h-full relative bg-white border-r border-dashed border-slate-200 grid-bg transition-all duration-300 ease-in-out flex flex-col">
         <div class="w-full flex-grow relative overflow-hidden">
             <canvas id="canvas-left" class="w-full h-full"></canvas>
         </div>
@@ -121,7 +121,7 @@
     </div>
 
     <!-- RIGHT WORKSPACE CANVAS DIVISION -->
-    <div id="pane-right" class="w-1/2 h-full relative bg-white grid-bg transition-all duration-300 ease-in-out flex flex-col hidden">
+    <div id="pane-right" class="w-1/2 h-full relative bg-white grid-bg transition-all duration-300 ease-in-out flex flex-col">
         <div class="w-full flex-grow relative overflow-hidden">
             <canvas id="canvas-right" class="w-full h-full"></canvas>
         </div>
@@ -199,7 +199,7 @@
         const btnSplit = document.getElementById('mode-split');
         const paneLeft = document.getElementById('pane-left');
         const paneRight = document.getElementById('pane-right');
-        let layoutMode = 'single'; 
+        let layoutMode = 'split'; 
 
         function updateLayoutMode(mode) {
             layoutMode = mode;
@@ -452,9 +452,6 @@
 
         bootstrapBoard('canvas-left', 'pane-left', 'left');
         bootstrapBoard('canvas-right', 'pane-right', 'right');
-
-        // Start in single-view mode; split screen remains available from the header.
-        updateLayoutMode('single');
     </script>
 </body>
 </html>
