@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#ffffff">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=add,arrow_back,arrow_forward,brush,close,delete,draw,edit,grid_4x4,highlighter,ink_eraser,more_horiz,pan_tool,redo,save,settings,straighten,tune,undo,zoom_in,zoom_out&display=block" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=add,arrow_back,arrow_forward,brush,close,dashboard,delete,draw,edit,grid_on,highlighter,ink_eraser,more_horiz,pan_tool,redo,save,settings,straighten,tune,undo,zoom_in,zoom_out&display=block" rel="stylesheet">
 <title>Rohan's Whiteboard</title>
 <style>
 :root{--purple:#6541b8;--purple2:#805bd0;--ink:#252333;--muted:#777486;--line:#e7e4ed;--panel:#fff;--orange:#f59e0b}
@@ -13,7 +13,11 @@
 header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;padding:0 18px;z-index:20}
 .brand{display:flex;align-items:center;gap:10px;font-weight:750;font-size:15px;white-space:nowrap}.logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(145deg,#ff9b38 0%,#f05d88 52%,#7654d8 100%);display:grid;place-items:center;color:#fff;box-shadow:0 3px 9px #e77c8a45}
 .mi{font-family:'Material Symbols Rounded';font-weight:400;font-style:normal;font-size:23px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;display:inline-flex;align-items:center;justify-content:center}
-.logo .mi{font-size:22px}
+.logo{position:relative;overflow:hidden;border-radius:10px;background:linear-gradient(145deg,#ffb13d 0%,#ff7c43 54%,#ed5b72 100%);box-shadow:0 3px 9px #f18a5540}
+.logo-board{position:absolute;display:block;width:17px;height:20px;border:2px solid #fff;border-radius:3px;background:#ffffff30}
+.logo-board-back{left:7px;top:6px;transform:rotate(-9deg);opacity:.78}
+.logo-board-front{left:12px;top:8px;transform:rotate(8deg);background:#fff}
+.logo-pen{position:absolute!important;right:4px;bottom:4px;font-size:13px!important;color:#ef7840;background:#fff;border-radius:50%;width:16px;height:16px}
 
 .project{border:0;background:transparent;font-size:13px;color:#5f5a6b;padding:8px 10px;border-radius:7px}.project:hover{background:#f5f1fb}
 .header-tools{display:flex;align-items:center;gap:7px;margin-left:auto}.headbtn{border:1px solid #e5e1eb;background:white;color:#504b5c;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:650}.headbtn:hover{background:#f5f1fb}.headbtn.primary{background:var(--purple);color:#fff;border-color:var(--purple)}
@@ -22,19 +26,26 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
 .pane[hidden]{display:none}
 .pane canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
 .pane-label{position:absolute;top:13px;right:15px;z-index:2;font-size:10px;color:#a09baa;pointer-events:none;letter-spacing:.04em}
-.floatbar{position:absolute;z-index:10;left:14px;top:50%;transform:translateY(-50%);width:58px;padding:8px 6px;background:#fff;border:1px solid #e4dfeb;border-radius:15px;box-shadow:0 5px 22px #2c21421c;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:none}
-.floatbar.right{left:auto;right:14px}
-.grip{height:17px;width:100%;display:grid;place-items:center;color:#b2acbc;cursor:grab;touch-action:none;font-size:15px;letter-spacing:2px}
+.floatbar{position:absolute;z-index:10;left:50%;bottom:14px;top:auto;transform:translateX(-50%);width:max-content;max-width:calc(100% - 22px);padding:8px 11px;background:#fff;border:1px solid #e4dfeb;border-radius:16px;box-shadow:0 6px 24px #2c21421c;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:5px;touch-action:auto;overflow:visible}
+.floatbar.right{left:50%;right:auto}
+.grip{height:34px;width:22px;flex:none;display:grid;place-items:center;color:#9a93a5;cursor:grab;touch-action:none;font-size:17px;letter-spacing:1px;border-right:1px solid #eeeaf2;margin-right:3px;user-select:none}
 .tbtn{width:42px;height:42px;border:0;border-radius:10px;background:transparent;color:#625d6c;display:grid;place-items:center;position:relative}
 .tbtn .mi{font-size:23px}
-.floatbar{touch-action:auto}
+.floatbar{touch-action:auto;overflow:visible}
 .grip{touch-action:none;user-select:none}
-.size-pop{z-index:30;touch-action:pan-y;pointer-events:auto}
-#backgroundMenu{position:fixed;top:66px;left:180px;z-index:60}
+.size-pop{z-index:80;touch-action:pan-y;pointer-events:auto}
+#backgroundMenu{position:fixed;top:66px;left:180px;z-index:100;max-height:calc(100vh - 90px);overflow:auto}
 @media(max-width:650px){#backgroundMenu{top:58px;left:8px}}
 
 .tbtn:hover{background:#f4f0fa;color:var(--purple)}.tbtn.active{background:#eee8fa;color:var(--purple);box-shadow:inset 0 0 0 1px #d8c9f3}
-.sep{height:1px;width:29px;background:#ece8f0;margin:4px 0}
+.sep{height:28px;width:1px;flex:none;background:#ece8f0;margin:0 4px}
+.palette{display:flex;flex-direction:row;align-items:center;gap:7px;padding:4px 5px}
+.swatch{width:19px;height:19px;flex:none}
+.size-pop{position:absolute;left:50%;top:auto;bottom:calc(100% + 12px);transform:translateX(-50%);width:210px;max-width:calc(100vw - 28px);padding:14px;background:white;border:1px solid var(--line);border-radius:13px;box-shadow:0 8px 28px #261b3a24;display:none;gap:10px;flex-direction:column}
+.floatbar.right .size-pop{left:50%;right:auto}
+.size-pop.open{display:flex}
+.size-pop label{font-size:12px;color:#6d6877;font-weight:700}
+.size-pop input{width:100%;accent-color:var(--purple);cursor:pointer}
 .palette{display:grid;grid-template-columns:repeat(2,15px);gap:6px;padding:4px 0}.swatch{width:15px;height:15px;border-radius:50%;border:1px solid #0002;box-shadow:0 0 0 1px #fff}.swatch.selected{outline:2px solid var(--purple);outline-offset:2px}
 .size-pop{position:absolute;left:68px;top:50%;transform:translateY(-50%);width:190px;padding:12px;background:white;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 28px #261b3a24;display:none;gap:9px;flex-direction:column}.floatbar.right .size-pop{left:auto;right:68px}.size-pop.open{display:flex}.size-pop label{font-size:11px;color:#6d6877;font-weight:700}.size-pop input{width:100%;accent-color:var(--purple)}
 .bottom{height:55px;flex:none;background:#fff;border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 14px;z-index:12}
@@ -43,13 +54,14 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
 .pageright{font-size:11px;color:#8c8795;white-space:nowrap}
 .toast{position:fixed;bottom:70px;left:50%;transform:translate(-50%,8px);opacity:0;pointer-events:none;background:#30283d;color:white;padding:9px 14px;border-radius:9px;font-size:12px;z-index:50;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
 .menu{position:absolute;top:54px;left:16px;z-index:40;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 30px #261b3a24;padding:7px;display:none;min-width:190px}.menu.open{display:block}.menu button{display:block;width:100%;text-align:left;border:0;background:white;padding:10px;border-radius:7px;font-size:12px;color:#514b5d}.menu button:hover{background:#f4f0fa}
-@media(max-width:650px){header{height:52px;padding:0 9px;gap:6px}.brand{font-size:12px}.project{display:none}.headbtn{padding:7px 8px;font-size:11px}.floatbar{left:7px;width:49px;padding:6px 3px}.floatbar.right{right:7px}.tbtn{width:39px;height:39px}.size-pop{left:55px}.floatbar.right .size-pop{right:55px}.bottom{height:49px;padding:0 6px}.pageright{display:none}}
+@media(max-width:850px){header{height:54px;padding:0 9px;gap:6px}.brand{font-size:12px}.project{display:none}.headbtn{padding:7px 8px;font-size:11px}.floatbar{bottom:9px;max-width:calc(100% - 12px);gap:3px;padding:6px 7px}.tbtn{width:36px;height:38px}.tbtn .mi{font-size:21px}.palette{gap:5px;padding:3px}.swatch{width:17px;height:17px}.grip{width:18px}.size-pop{bottom:calc(100% + 9px)}.bottom{height:49px;padding:0 6px}.pageright{display:none}}
+@media(max-width:520px){.floatbar{max-width:calc(100% - 8px);gap:1px;padding:5px 4px}.tbtn{width:31px;height:34px}.tbtn .mi{font-size:19px}.swatch{width:14px;height:14px}.palette{gap:4px}.sep{margin:0 2px;height:23px}.grip{width:15px;margin-right:1px}.size-pop{width:190px}}
 </style>
 </head>
 <body>
 <div id="app">
 <header>
- <div class="brand"><div class="logo" aria-label="Whiteboard logo"><span class="mi">draw</span></div><span>Whiteboard</span></div>
+ <div class="brand"><div class="logo" aria-label="Whiteboard logo"><span class="logo-board logo-board-back"></span><span class="logo-board logo-board-front"></span><span class="mi logo-pen">edit</span></div><span>Whiteboard</span></div>
  <button class="project" id="projectName">Untitled board ▾</button>
  <div class="header-tools">
   <button class="headbtn" id="backgroundBtn">Background</button>
@@ -132,17 +144,44 @@ function zoom(f){sides.forEach(s=>{const p=page(s);p.zoom=Math.max(.25,Math.min(
 sides.forEach(s=>{canv[s]=$('canvas-'+s);ctx[s]=canv[s].getContext('2d');canv[s].addEventListener('pointerdown',e=>start(s,e));canv[s].addEventListener('pointermove',e=>move(s,e));['pointerup','pointercancel','lostpointercapture'].forEach(n=>canv[s].addEventListener(n,e=>end(s,e)));new ResizeObserver(()=>resize(s)).observe(canv[s].parentElement)});
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.side,b.dataset.tool));
 document.querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{const s=b.closest('[data-palette]').dataset.palette;page(s).color=b.dataset.color;b.parentElement.querySelectorAll('.swatch').forEach(x=>x.classList.toggle('selected',x===b));save()});
-document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>{const s=b.dataset.side;if(b.dataset.action==='size')$('size-'+s).classList.toggle('open');if(b.dataset.action==='undo')undo(s);if(b.dataset.action==='clear'){clear(s);toast('Drawings cleared')}});
-document.addEventListener('click',e=>{
- if(!e.target.closest('.floatbar'))document.querySelectorAll('.size-pop').forEach(p=>p.classList.remove('open'));
+document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>{const s=b.dataset.side;if(b.dataset.action==='undo')undo(s);if(b.dataset.action==='clear'){clear(s);toast('Drawings cleared')}});
+function closePopups(except=null){
+ document.querySelectorAll('.size-pop').forEach(p=>{if(p!==except)p.classList.remove('open')});
+}
+document.querySelectorAll('[data-action="size"]').forEach(b=>{
+ b.setAttribute('aria-haspopup','true');
+ b.setAttribute('aria-expanded','false');
+ b.addEventListener('click',e=>{
+  e.stopPropagation();
+  const s=b.dataset.side,pop=$('size-'+s),willOpen=!pop.classList.contains('open');
+  closePopups(pop);
+  pop.classList.toggle('open',willOpen);
+  b.setAttribute('aria-expanded',String(willOpen));
+ });
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.size-pop').forEach(p=>p.classList.remove('open'));$('backgroundMenu').classList.remove('open')}});
+document.querySelectorAll('.size-pop').forEach(pop=>{
+ pop.addEventListener('pointerdown',e=>e.stopPropagation());
+ pop.addEventListener('click',e=>e.stopPropagation());
+});
+document.addEventListener('pointerdown',e=>{
+ if(!e.target.closest('.floatbar'))closePopups();
+ if(!e.target.closest('#backgroundBtn')&&!e.target.closest('#backgroundMenu'))$('backgroundMenu').classList.remove('open');
+});
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){closePopups();$('backgroundMenu').classList.remove('open')}
+});
 document.querySelectorAll('[data-width]').forEach(i=>i.oninput=()=>{const s=i.dataset.width;page(s).width=+i.value;$('width-'+s).textContent=i.value;save()});
 document.querySelectorAll('[data-erase]').forEach(i=>i.oninput=()=>{const s=i.dataset.erase;page(s).eraser=+i.value;$('erase-'+s).textContent=i.value;save()});
 function dragBar(s){const bar=$('bar-'+s),grip=bar.querySelector('.grip');let drag=null;grip.addEventListener('pointerdown',e=>{const r=bar.getBoundingClientRect();drag={x:e.clientX-r.left,y:e.clientY-r.top};grip.setPointerCapture(e.pointerId);e.preventDefault()});grip.addEventListener('pointermove',e=>{if(!drag)return;const pane=$('pane-'+s).getBoundingClientRect();const x=Math.max(0,Math.min(pane.width-bar.offsetWidth,e.clientX-pane.left-drag.x)),y=Math.max(0,Math.min(pane.height-bar.offsetHeight,e.clientY-pane.top-drag.y));bar.style.left=x+'px';bar.style.right='auto';bar.style.top=y+'px';bar.style.transform='none'});['pointerup','pointercancel'].forEach(n=>grip.addEventListener(n,()=>drag=null))}
 sides.forEach(dragBar);
 $('splitBtn').onclick=()=>setSplit(!split);$('zoomIn').onclick=()=>zoom(1.2);$('zoomOut').onclick=()=>zoom(1/1.2);$('zoomRead').onclick=()=>{sides.forEach(s=>{page(s).zoom=1;page(s).panX=0;page(s).panY=0;redraw(s)});updateZoom();save()};
-$('backgroundBtn').onclick=()=> $('backgroundMenu').classList.toggle('open');
+$('backgroundBtn').onclick=e=>{
+ e.stopPropagation();
+ const menu=$('backgroundMenu'),r=$('backgroundBtn').getBoundingClientRect();
+ menu.style.left=Math.max(8,Math.min(window.innerWidth-210,r.left))+'px';
+ menu.style.top=Math.min(window.innerHeight-170,r.bottom+8)+'px';
+ menu.classList.toggle('open');
+};
 document.querySelectorAll('[data-bg]').forEach(b=>b.onclick=()=>{sides.forEach(s=>{page(s).bg=b.dataset.bg;redraw(s)});$('backgroundMenu').classList.remove('open');save()});
 document.addEventListener('click',e=>{if(!e.target.closest('#backgroundBtn')&&!e.target.closest('#backgroundMenu'))$('backgroundMenu').classList.remove('open')});
 $('add').onclick=addPage;$('prev').onclick=()=>{state.left.index=Math.max(0,state.left.index-1);state.right.index=Math.min(state.left.index,state.right.pages.length-1);sides.forEach(redraw);renderPages();save()};$('next').onclick=()=>{state.left.index=Math.min(state.left.pages.length-1,state.left.index+1);state.right.index=Math.min(state.left.index,state.right.pages.length-1);sides.forEach(redraw);renderPages();save()};
