@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#ffffff">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=add,arrow_back,arrow_forward,brush,close,dashboard,delete,description,draw,edit,grid_on,highlight,ink_eraser,more_horiz,pan_tool,redo,save,settings,splitscreen,straighten,tune,undo,zoom_in,zoom_out&display=block" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&icon_names=add,arrow_back,arrow_forward,brush,close,create_new_folder,dashboard,delete,description,draw,drive_file_rename_outline,edit,folder,grid_on,highlight,ink_eraser,more_horiz,open_in_new,pan_tool,redo,save,settings,splitscreen,straighten,tune,undo,zoom_in,zoom_out&display=block" rel="stylesheet">
 <title>Rohan's Whiteboard</title>
 <style>
 :root{--purple:#6541b8;--purple2:#805bd0;--ink:#252333;--muted:#777486;--line:#e7e4ed;--panel:#fff;--orange:#f59e0b}
@@ -120,6 +120,22 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
 .dash-footer{max-width:1050px;margin:28px auto 0;display:flex;justify-content:space-between;color:#a09aaa;font-size:11px}.dash-mark{display:flex;align-items:center;gap:5px;color:#766b89}
 @media(max-width:700px){.dashboard{inset:54px 0 49px;padding:20px 14px}.dash-actions{grid-template-columns:1fr;gap:9px}.dash-card{min-height:95px;padding:14px}.dash-top{margin-bottom:20px}.dash-footer{gap:12px;flex-wrap:wrap}.floatbar,.floatbar.right{left:7px;width:50px;padding:7px 4px}.tbtn{width:38px;height:36px}.palette{gap:5px}.swatch{width:15px;height:15px}.view-switch{font-size:0;gap:0}.view-switch .mi{font-size:19px}}
 @media(max-width:430px){.brand>span{display:none}#dashboardBtn{font-size:0}#dashboardBtn .mi{font-size:19px}.header-tools{gap:4px}}
+
+#dashboard[hidden]{display:none!important}
+.dash-library{max-width:1050px;margin:22px auto 0}.dash-library-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dash-library-actions{display:flex;gap:8px}.dash-library-actions button,.file-action{border:1px solid #e5e1eb;background:#fff;border-radius:9px;padding:9px 12px;font-size:12px;color:#504b5c}
+.dash-library-actions .make-file{background:#6541b8;color:white;border-color:#6541b8}
+.library-list{margin-top:13px;background:#fff;border:1px solid #e7e1ed;border-radius:14px;overflow:hidden}
+.library-row{display:flex;align-items:center;gap:12px;padding:12px 15px;border-bottom:1px solid #f0edf3}.library-row:last-child{border-bottom:0}
+.library-row .file-glyph{width:34px;height:34px;border-radius:10px;background:#f1ebfb;color:#704db6;display:grid;place-items:center}.library-row.folder .file-glyph{background:#fff3df;color:#d78a25}
+.library-row .file-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.library-row strong{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.library-row small{font-size:11px;color:#8b8495}
+.library-row .file-actions{display:flex;gap:5px;flex-wrap:wrap}.library-empty{padding:25px;text-align:center;color:#8b8495;font-size:13px}
+.ruler-overlay{position:absolute;z-index:8;left:50%;top:42%;transform:translate(-50%,-50%);width:min(390px,calc(100% - 100px));height:66px;border:1px solid #c8b58c;border-radius:7px;background:linear-gradient(180deg,#fff8d9ee,#f8e9b9ee);box-shadow:0 5px 18px #4b3a1b24;display:none;touch-action:none;user-select:none}
+.ruler-overlay.visible{display:block}.ruler-overlay:before{content:"";position:absolute;left:0;right:0;top:0;height:17px;border-bottom:1px solid #d5c394;background:repeating-linear-gradient(90deg,transparent 0 9px,#9f8b60 9px 10px,transparent 10px 19px)}
+.ruler-overlay:after{content:"";position:absolute;left:0;right:0;top:0;height:11px;background:repeating-linear-gradient(90deg,transparent 0 49px,#8c774b 49px 50px,transparent 50px 99px)}
+.ruler-edge{position:absolute;left:0;right:0;bottom:0;height:12px;border-top:2px solid #9b8657;cursor:crosshair;touch-action:none}
+.ruler-grip{position:absolute;top:21px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:4px;color:#8c774b;cursor:move;padding:6px 15px;touch-action:none}
+@media(max-width:700px){.dash-library-head{align-items:flex-start;flex-direction:column}.library-row{padding:10px}.library-row .file-actions{max-width:115px}.file-action{padding:7px}}
 </style>
 </head>
 <body>
@@ -136,7 +152,7 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
  </div>
 </header>
 <main id="workspace">
- <section class="pane" id="pane-left"><span class="pane-label">WHITEBOARD 1</span><canvas id="canvas-left"></canvas>
+ <section class="pane" id="pane-left"><span class="pane-label">WHITEBOARD 1</span><canvas id="canvas-left"></canvas><div class="ruler-overlay" id="ruler-left"><div class="ruler-grip">••••••</div><div class="ruler-edge" title="Drag along this edge to draw a straight line"></div></div>
   <div class="floatbar" id="bar-left"><div class="grip" data-grip="left">•••</div>
    <button class="tbtn active" data-side="left" data-tool="pen" title="Pen"><span class="mi">edit</span></button>
    <button class="tbtn" data-side="left" data-tool="highlighter" title="Highlighter"><span class="mi">highlight</span></button>
@@ -152,7 +168,7 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
    <div class="size-pop" id="size-left"><label>Pen thickness <span id="width-left">4</span></label><input type="range" min="1" max="28" value="4" data-width="left"><label>Eraser size <span id="erase-left">24</span></label><input type="range" min="8" max="80" value="24" data-erase="left"></div>
   </div>
  </section>
- <section class="pane" id="pane-right" hidden><span class="pane-label">WHITEBOARD 2</span><canvas id="canvas-right"></canvas>
+ <section class="pane" id="pane-right" hidden><span class="pane-label">WHITEBOARD 2</span><canvas id="canvas-right"></canvas><div class="ruler-overlay" id="ruler-right"><div class="ruler-grip">••••••</div><div class="ruler-edge" title="Drag along this edge to draw a straight line"></div></div>
   <div class="floatbar right" id="bar-right"><div class="grip" data-grip="right">•••</div>
    <button class="tbtn active" data-side="right" data-tool="pen" title="Pen"><span class="mi">edit</span></button>
    <button class="tbtn" data-side="right" data-tool="highlighter" title="Highlighter"><span class="mi">highlight</span></button>
@@ -172,7 +188,7 @@ header{height:58px;flex:none;background:#fff;border-bottom:1px solid var(--line)
 <section id="dashboard" class="dashboard" hidden role="dialog" aria-modal="true" aria-label="Whiteboard dashboard">
 <div class="dash-top"><div><div class="dash-kicker">ROHAN’S WHITEBOARD</div><h1>Your workspace</h1><p>Pick up where you left off or start a fresh board.</p></div><button class="dash-close" id="dashboardClose" aria-label="Close dashboard"><span class="mi">close</span></button></div>
 <div class="dash-actions"><button class="dash-card new-board" id="newBoard"><span class="dash-icon"><span class="mi">add</span></span><strong>New whiteboard</strong><small>Start with a clean page</small></button><button class="dash-card" id="continueBoard"><span class="dash-icon"><span class="mi">draw</span></span><strong>Continue working</strong><small>Return to your current board</small></button><button class="dash-card" id="dashboardSplit"><span class="dash-icon"><span class="mi">splitscreen</span></span><strong>Open split view</strong><small>Work on two boards side by side</small></button></div>
-<div class="dash-section"><h2>Recent board</h2><p>Your board is saved automatically on this device.</p><div class="recent-board"><span class="recent-icon"><span class="mi">description</span></span><div><strong id="dashBoardName">Untitled board</strong><small id="dashBoardInfo">1 page · Ready to continue</small></div><button id="recentOpen">Open board <span class="mi">arrow_forward</span></button></div></div>
+<div class="dash-library"><div class="dash-library-head"><div><h2>Your files</h2><p>Save multiple whiteboards and organise them into folders.</p></div><div class="dash-library-actions"><button id="addFolder"><span class="mi">create_new_folder</span> New folder</button><button class="make-file" id="newBoardFile"><span class="mi">add</span> New whiteboard</button></div></div><div class="library-list" id="libraryList"></div></div>
 <div class="dash-footer"><span>Changes are stored locally in this browser.</span><span class="dash-mark"><span class="mi">draw</span> Whiteboard</span></div></section>
 </main>
 <footer class="bottom">
